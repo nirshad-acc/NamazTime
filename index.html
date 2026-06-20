@@ -139,7 +139,7 @@
           yearData = await fetchWholeYear();
           renderDayData(
             yearData,
-            new Date().getDate()
+            new Date()
           );
         } else {
 //          fetchData();
@@ -179,6 +179,11 @@
           document.getElementById('search-lbl').innerText = "";
         }
 //        fetchData();
+        renderDayData(
+            yearData,
+            new Date(p.value+'T00:00:00')
+        );
+       
       }
 
       function resetToToday() {
@@ -309,8 +314,11 @@
           .catch(err => console.warn("Silent pre-fetch failed (likely offline):", err));
       }
 
-      function renderDayData(d, targetDay) {
+      function renderDayData(d, targetDateObj = new Date()){
         document.getElementById('loader').style.display = 'none';
+        
+        const targetDay = targetDateObj.getDate();
+        const targetMonth = targetDateObj.getMonth();
         
         // 🛠️ OFFLINE HIJRI DELTA CALCULATOR ENGINE
         const pVal = document.getElementById('datePicker').value;
@@ -359,16 +367,7 @@
 
         let r = null;
         
-        let daysArray = d.days;
-        
-        if (USE_YEAR_CACHE && d.months) {
-          const pVal = document.getElementById('datePicker').value;
-          const targetDateObj = pVal
-            ? new Date(pVal + 'T00:00:00')
-            : new Date();
-        
-          daysArray = d.months[targetDateObj.getMonth()].days;
-        }
+        let daysArray = d.months[targetMonth].days;
         
         for (let i = 1; i < daysArray.length; i++) {
         
