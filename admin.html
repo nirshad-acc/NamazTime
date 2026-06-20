@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Namaz MRU - Admin Panel</title>
+    <style>
+        :root {
+            --primary: #1e4d50;
+            --bg: #e0fdfb;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .admin-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(30, 77, 80, 0.15);
+            width: 100%;
+            max-width: 400px;
+        }
+        h2 {
+            color: var(--primary);
+            margin-top: 0;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus {
+            border-color: var(--primary);
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: opacity 0.2s;
+        }
+        button:active {
+            opacity: 0.8;
+        }
+        #statusMessage {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-card">
+    <h2>Settings Manager</h2>
+    
+    <div class="form-group">
+        <label for="adminPassword">Admin Password</label>
+        <input type="password" id="adminPassword" placeholder="Enter security password">
+    </div>
+    
+    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
+
+    <div class="form-group">
+        <label for="moonSighted">Moon Sighted Date (C27)</label>
+        <input type="text" id="moonSighted" placeholder="e.g., Sat 23 May">
+    </div>
+
+    <div class="form-group">
+        <label for="hijriMonth">Islamic Month Number (C28)</label>
+        <input type="number" id="hijriMonth" placeholder="e.g., 11" min="1" max="12">
+    </div>
+  
+    <div class="form-group">
+        <label for="hijriYear">Hijri Year (C7)</label>
+        <input type="number" id="hijriYear" placeholder="e.g., 1447">
+    </div>
+
+    <button onclick="updateSystem()">Update Backend Sheet</button>
+    
+    <div id="statusMessage"></div>
+    
+    <a href="#" onclick="window.location.replace('./index.html'); return false;" class="back-link">← Return to Dashboard</a>
+</div>
+
+<script>
+    // 🔗 Your Apps Script Web App URL
+    const API_URL = "https://script.google.com/macros/s/AKfycbxqBm_FQ58OkJSxJj-79jz3ElzOOhHYtZlZX5lJyOBFdZLBbxqDwyFkDmpKdLxJCf7A/exec";
+
+    // 🔄 Automatically fetch and display current database values when page loads
+    window.addEventListener('DOMContentLoaded', fetchCurrentSettings);
+
+    async function fetchCurrentSettings() {
+        const status = document.getElementById('statusMessage');
+        status.style.color = "orange";
+        status.innerText = "Fetching current database values...";
+
+        try {
+            // Appends the secret action flag to your GET request
+            const response = await fetch(`${API_URL}?action=getSettings`);
+            const currentData = await response.json();
+
+            if (currentData.error) {
+                status.style.color = "red";
+                status.innerText = "❌ Could not read database configurations.";
+                return;
+            }
+
+            // Populates the input boxes with the actual spreadsheet numbers/text
+            document.getElementById('moonSighted').value = currentData.moonSighted || "";
+            document.getElementById('hijriMonth').value = currentData.hijriMonth || "";
+            document.getElementById('hijriYear').value = currentData.hijriYear || "";
+
+            status.style.color = "green";
+            status.innerText = "✅ Current settings loaded successfully.";
+            
+            // Clears the success text after 3 seconds so the screen stays clean
+            setTimeout(() => { status.innerText = ""; }, 3000);
+
+        } catch (err) {
+            status.style.color = "red";
+            status.innerText = "❌ Failed to connect to database reader.";
+            console.error(err);
+        }
+    }
+
+    // 💾 Securely send updated inputs back to Google Sheets
+    async function updateSystem() {
+        const password = document.getElementById('adminPassword').value;
+        const moonSighted = document.getElementById('moonSighted').value;
+        const hijriMonth = document.getElementById('hijriMonth').value;
+        const hijriYear = document.getElementById('hijriYear').value;
+        const status = document.getElementById('statusMessage');
+
+        if (!password) {
+            status.style.color = "red";
+            status.innerText = "Password is required to make changes!";
+            return;
+        }
+
+        status.style.color = "orange";
+        status.innerText = "Saving changes to Google Sheets...";
+
+        const payload = {
+            password: password,
+            moonSighted: moonSighted,
+            hijriMonth: parseInt(hijriMonth, 10),
+            hijriYear: parseInt(hijriYear, 10)
+        };
+
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            });
+            
+            const result = await response.json();
+
+            if (result.success) {
+                status.style.color = "green";
+                status.innerText = "🎉 Spreadsheet updated successfully!";
+                // Refresh the values on screen to show the newly saved state
+                setTimeout(fetchCurrentSettings, 1500);
+            } else {
+                status.style.color = "red";
+                status.innerText = "❌ Error: " + result.error;
+            }
+        } catch (err) {
+            status.style.color = "red";
+            status.innerText = "❌ Network communication failed.";
+            console.error(err);
+        }
+    }
+</script>
+    
+</body>
+</html>
