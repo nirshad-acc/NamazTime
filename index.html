@@ -198,6 +198,19 @@
         if (cache) {
           const parsed = JSON.parse(cache);
           if ((Date.now() - parsed.lastSync) < CACHE_MAX_AGE) {
+            if (!localStorage.getItem("hijriAnchorGregorian")) {
+
+                localStorage.setItem(
+                    "hijriAnchorGregorian",
+                    getLocalDateString()
+                );
+            
+                localStorage.setItem(
+                    "hijriAnchorString",
+                    parsed.data.hijri
+                );
+            
+            }
             console.log("Using whole-year cache");
             return parsed.data;
           }
@@ -205,7 +218,7 @@
         console.log("Downloading whole year");
         const response = await fetch(`${API_URL}?year=true`);
         const data = await response.json();
-      
+             
         localStorage.setItem(
           YEAR_CACHE_KEY,
           JSON.stringify({
