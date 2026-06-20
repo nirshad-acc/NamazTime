@@ -142,7 +142,7 @@
             new Date().getDate()
           );
         } else {
-          fetchData();
+//          fetchData();
         } 
 
         // Automatically registers the background service worker script
@@ -178,7 +178,7 @@
           btn.classList.remove('active');
           document.getElementById('search-lbl').innerText = "";
         }
-        fetchData();
+//        fetchData();
       }
 
       function resetToToday() {
@@ -213,7 +213,8 @@
 
       
       // Updated to handle standard fetch operations and record offline anchors
-      async function fetchData() {
+  
+    async function fetchData() {
         const p = document.getElementById('datePicker').value;
         const todayStr = getLocalDateString();
         const targetDateObj = p ? new Date(p + 'T00:00:00') : new Date();
@@ -247,7 +248,7 @@
                 renderDayData(data, targetDay);
                 
                 // Trigger look-ahead pre-fetch for the next month
-                preFetchNextMonth(targetDateObj);
+//                preFetchNextMonth(targetDateObj);
               }
             } catch (err) {
               console.warn("Background refresh skipped: offline or API unreachable.", err);
@@ -272,7 +273,7 @@
               renderDayData(data, targetDay);
               
               // Trigger look-ahead pre-fetch for the next month
-              preFetchNextMonth(targetDateObj);
+//              preFetchNextMonth(targetDateObj);
             } else {
               throw new Error(data.error || "Unknown database error");
             }
