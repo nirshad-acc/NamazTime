@@ -55,6 +55,43 @@
           box-shadow: 0 4px 12px rgba(0,0,0,.15);
           border-radius: 0 0 20px 20px;
         }
+
+          .button-row{
+          display:flex;
+          gap:14px;
+          margin:20px 0 10px;
+        }
+        
+        .menu-btn{
+          flex:1;
+          border:none;
+          border-radius:22px;
+          padding:16px 12px;
+          color:white;
+          font-size:.85rem;
+          font-weight:700;
+          cursor:pointer;
+          box-shadow:0 4px 12px rgba(0,0,0,.18);
+          transition:.2s;
+        }
+        
+        .menu-btn i{
+          font-size:1.4rem;
+          margin-bottom:6px;
+        }
+        
+        .menu-btn:active{
+          transform:scale(.96);
+        }
+        
+        .calendar-btn{
+          background:linear-gradient(135deg,#1e7f46,#33a05a);
+        }
+        
+        .about-btn{
+          background:linear-gradient(135deg,#1565c0,#42a5f5);
+        }
+      
       
       .prayer-row { display: grid; grid-template-columns: 100px 1fr 1fr 1fr; align-items: center; padding: 14px 12px; margin-bottom: 12px; border-radius: 18px; text-align: center; gap: 5px; }
       .raised { box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light); }
@@ -109,12 +146,24 @@
         </div>
       
       <div id="loader" class="loader" style="display:none;"></div>
-      <div id="content"></div>
-
-      <div class="footer">
-        <div id="lastUpd" class="update-txt">Ready</div>
-        <span class="disc-link" onclick="document.getElementById('m').style.display='flex'">Disclaimer & Privacy</span>
-      </div>
+        <div id="content"></div>
+        
+        <div class="button-row">
+          <button class="menu-btn calendar-btn" onclick="showYearCalendar()">
+            <i class="fas fa-calendar-alt"></i><br>
+            Hijri Calendar
+          </button>
+        
+          <button class="menu-btn about-btn"
+                  onclick="document.getElementById('m').style.display='flex'">
+            <i class="fas fa-circle-info"></i><br>
+            Disclaimer & Privacy
+          </button>
+        </div>
+        
+        <div class="footer">
+          <div id="lastUpd" class="update-txt">Ready</div>
+        </div>
     </div>
 
     <div id="m" style="display:none; position:fixed; z-index:99; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;" onclick="this.style.display='none'">
