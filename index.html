@@ -45,7 +45,15 @@
       .btn { border: none; width: 40px; height: 36px; border-radius: 10px; cursor: pointer; background: var(--bg); color: var(--primary); box-shadow: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
       .btn-today { color: #0047ab; opacity: 0.3; pointer-events: none; }
       .btn-today.active { opacity: 1; pointer-events: auto; }
-
+      
+      .header-block{
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+          background: var(--bg);
+          padding-top: 10px;
+        }
+      
       .prayer-row { display: grid; grid-template-columns: 100px 1fr 1fr 1fr; align-items: center; padding: 14px 12px; margin-bottom: 12px; border-radius: 18px; text-align: center; gap: 5px; }
       .raised { box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light); }
       .sunken { box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); background: #f0ffff; }
