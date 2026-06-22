@@ -1,6 +1,6 @@
 {
   "name": "Namaz-Times Mauritius",
-  "short_name": "Namaz MRU",
+  "short_name": "Namaz",
   "description": "A lightweight, offline-first prayer dashboard for Mauritius.",
   "start_url": "./index.html",
   "display": "standalone",
