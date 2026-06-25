@@ -15,7 +15,7 @@
       "purpose": "any"
     },
     {
-      "src": "./dome-RedBg_maskable_512x512.png",
+      "src": "./dome_RedBg_maskable_512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
