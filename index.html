@@ -11,9 +11,9 @@
     <link rel="manifest" href="manifest.json">
     <style>
       :root {
-        --bg: #e0fdfb;           
-        --shadow-light: #ffffff; 
-        --shadow-dark: #b8d9d7;  
+        --bg: #76C8E8;      /* #e0fdfb;  */         
+        --shadow-light: rgba(255, 255, 255, 0.05);  /* #ffffff */
+        --shadow-dark: rgba(0, 0, 0, 0.25);        /* #b8d9d7; */ 
         --primary: #1e4d50;      
         --warning: #b33a3a;
       }
@@ -100,8 +100,9 @@
       
       
       .prayer-row { display: grid; grid-template-columns: 100px 1fr 1fr 1fr; align-items: center; padding: 14px 12px; margin-bottom: 12px; border-radius: 18px; text-align: center; gap: 5px; }
-      .raised { box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light); }
-      .sunken { box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); background: #f0ffff; }
+      .raised { box-shadow: 3px 3px 6px var(--shadow-dark), -2px -2px 4px var(--shadow-light); }  /* Reduced from 5px 5px 10px to a tighter, cleaner shadow */
+        /* from ->>> .sunken { box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); background: #f0ffff; }  */
+      .sunken { box-shadow: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light); background: rgba(0, 0, 0, 0.1); }
       
       .n-stack { text-align: left; line-height: 1.1; }
       .p-sub { font-size: 0.55rem; color: #5a7d80; font-weight: 700; text-transform: uppercase; }
