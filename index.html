@@ -345,7 +345,7 @@ async function checkForUpdates() {
             // Update the in-memory copy
             yearData = latest;
             // Refresh the current screen
-            renderDayData();
+            renderDayData(yearData);
             console.log("Screen refreshed with latest data.");
                     }
       } catch (err) {
@@ -450,7 +450,7 @@ async function checkForUpdates() {
           .catch(err => console.warn("Silent pre-fetch failed (likely offline):", err));
       }
 
-      function renderDayData(d, targetDateObj = new Date()){
+      function renderDayData(d = yearData, targetDateObj = new Date()){
         document.getElementById('loader').style.display = 'none';
         
         const targetDay = targetDateObj.getDate();
