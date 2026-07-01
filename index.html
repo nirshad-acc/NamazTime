@@ -221,23 +221,8 @@
             .catch((err) => console.error("Service worker registration failed:", err));
         }
 
-        setTimeout(async () => {
-            console.log("Checking for newer backend data...");
-        
-            try {
-                const response = await fetch(`${API_URL}?year=true`);
-        
-                console.log("HTTP Status:", response.status);
-        
-                const data = await response.json();
-        
-                console.log("Backend reached successfully.");
-                console.log(data);
-        
-            } catch (err) {
-                console.error("Background fetch failed:", err);
-            }
-        
+        setTimeout(() => {
+            checkForUpdates();
         }, 500);
       };
 
@@ -303,17 +288,14 @@
           const parsed = JSON.parse(cache);
           if ((Date.now() - parsed.lastSync) < CACHE_MAX_AGE) {
             if (!localStorage.getItem("hijriAnchorGregorian")) {
-
                 localStorage.setItem(
                     "hijriAnchorGregorian",
                     getLocalDateString()
                 );
-            
                 localStorage.setItem(
                     "hijriAnchorString",
                     parsed.data.hijri
                 );
-            
             }
             console.log("Using whole-year cache");
             return parsed.data;
@@ -333,6 +315,30 @@
         return data;
       }
 
+async function checkForUpdates() {
+    console.log("Checking for newer backend data...");
+    try {
+        const response = await fetch(`${API_URL}?year=true`);
+        const latest = await response.json();
+        const cache = JSON.parse(localStorage.getItem(YEAR_CACHE_KEY));
+        if (!cache) {
+            console.log("No cache found.");
+            return;
+        }
+        console.log("Comparing cache with backend...");
+      
+        const cachedString = JSON.stringify(cache.data);
+        const latestString = JSON.stringify(latest);
+      
+        if (cachedString === latestString) {
+            console.log("Cache is already up to date.");
+        } else {
+            console.log("New data detected.");
+        }
+      } catch (err) {
+        console.error(err);
+        }
+  }
       
       // Updated to handle standard fetch operations and record offline anchors
   
