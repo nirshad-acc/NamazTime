@@ -221,9 +221,24 @@
             .catch((err) => console.error("Service worker registration failed:", err));
         }
 
-        setTimeout(() => {
-              console.log("Checking for newer backend data...");
-          }, 500);
+        setTimeout(async () => {
+            console.log("Checking for newer backend data...");
+        
+            try {
+                const response = await fetch(`${API_URL}?year=true`);
+        
+                console.log("HTTP Status:", response.status);
+        
+                const data = await response.json();
+        
+                console.log("Backend reached successfully.");
+                console.log(data);
+        
+            } catch (err) {
+                console.error("Background fetch failed:", err);
+            }
+        
+        }, 500);
       };
 
       function getLocalDateString() {
