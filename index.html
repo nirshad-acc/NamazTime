@@ -209,9 +209,7 @@
             yearData,
             new Date()
           );
-          setTimeout(() => {
-              console.log("Checking for newer backend data...");
-          }, 500);
+          
         } else {
 //          fetchData();
         } 
@@ -222,6 +220,10 @@
             .then(() => console.log("Service Worker registered successfully!"))
             .catch((err) => console.error("Service worker registration failed:", err));
         }
+
+        setTimeout(() => {
+              console.log("Checking for newer backend data...");
+          }, 500);
       };
 
       function getLocalDateString() {
