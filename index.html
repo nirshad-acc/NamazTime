@@ -333,8 +333,21 @@ async function checkForUpdates() {
         if (cachedString === latestString) {
             console.log("Cache is already up to date.");
         } else {
-            console.log("New data detected.");
-        }
+            console.log("New data detected. Updating cache...");
+
+            localStorage.setItem(
+                YEAR_CACHE_KEY,
+                JSON.stringify({
+                    lastSync: Date.now(),
+                    data: latest
+                })
+            );
+            // Update the in-memory copy
+            yearData = latest;
+            // Refresh the current screen
+            renderDayData();
+            console.log("Screen refreshed with latest data.");
+                    }
       } catch (err) {
         console.error(err);
         }
