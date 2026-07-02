@@ -24,16 +24,10 @@
       h1 { color: var(--primary); text-align: center; font-size: 0.95rem; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 900; }
 
       #topHeader {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              padding: 10px 14px;
+              display: flex;              justify-content: space-between;              align-items: center;              padding: 10px 14px;
             }
             
-            #settingsIcon {
-              font-size: 20px;
-              cursor: pointer;
-              opacity: 0.8;
+            #settingsIcon {              font-size: 20px;              cursor: pointer;              opacity: 0.8;
             }
             
             #settingsIcon:hover {
@@ -78,10 +72,7 @@
           transform: translateY(-100%);
         }
 
-          .button-row{
-          display:flex;
-          gap:14px;
-          margin:20px 0 10px;
+          .button-row{          display:flex;          gap:14px;          margin:20px 0 10px;
         }
         
         .menu-btn{
@@ -90,8 +81,7 @@
           transition:.2s;
         }
         .menu-btn i{
-          font-size:1.4rem;
-          margin-bottom:6px;
+          font-size:1.4rem;          margin-bottom:6px;
         }
         
         .menu-btn:active{
@@ -170,10 +160,6 @@
     <div class="container">
       <div class="header-block">
           <h1>Prayer Dashboard For Mauritius</h1>
-
-           <div id="settingsIcon" title="Settings">
-              ⚙️
-            </div>
           <div class="top-banner">
             <div class="info-unit" style="flex: 1;">
               <span class="label-st">Today's Date</span>
@@ -230,10 +216,6 @@
       // REPLACE THIS STRING WITH YOUR DEPLOYED APPS SCRIPT WEB APP URL
       const API_URL = "https://script.google.com/macros/s/AKfycbznuarW_UGUZyZKuapdjhtSlIkC1ut71CfsOq0h1XvGmG02R6vaZB_Vf9JXFkD3xaosVw/exec";
         
-      document.getElementById("settingsIcon").addEventListener("click", () => {
-            window.open("settings.html", "_blank");
-          });
-
       const hubButton = document.getElementById("controlHubBtn");
       const hubMenu = document.getElementById("controlHubMenu");
 
