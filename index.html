@@ -99,15 +99,30 @@
         #controlHubBtn{
             position:fixed;    bottom:18px;    left:18px;    width:52px;    height:52px;    border:none;    border-radius:50%;    cursor:pointer;
             font-size:24px;    box-shadow:0 3px 10px rgba(0,0,0,.35);    z-index:9999;
+            transition:        transform .25s ease,        box-shadow .25s ease;
+        #controlHubBtn.open{
+            transform:rotate(180deg);            box-shadow:0 6px 18px rgba(0,0,0,.40);
+        }
+
+    
+   
         }
        #controlHubMenu{
             position:fixed;    bottom:80px;    left:18px;    width:230px;    background:white;    border-radius:12px;
             box-shadow:0 5px 18px rgba(0,0,0,.35);    overflow:hidden;    z-index:9999;
-            animation:menuAppear .18s ease;
-        }
-        .hidden{
-            display:none;
-        }
+            opacity:0;    transform:translateY(15px);    visibility:hidden;
+
+            transition:
+                opacity .25s ease,
+                transform .25s ease,
+                visibility .25s;
+                }
+      #controlHubMenu.show{
+            opacity:1;
+            transform:translateY(0);
+            visibility:visible;
+              }
+      
         .hubItem{
             padding:14px 16px;    cursor:pointer;    font-size:15px;    transition:.2s;
         }
@@ -120,6 +135,8 @@
         .adminItem{
             color:#b00020;
         }
+        .hubVersion{    padding:10px;    text-align:center;    font-size:11px;    color:#777;    background:#fafafa;
+            }
         @keyframes menuAppear{
             from{
                 opacity:0;
@@ -239,13 +256,20 @@
         const hubMenu = document.getElementById("controlHubMenu");
 
             hubButton.addEventListener("click", function(e){
+
                 e.stopPropagation();
-                hubMenu.classList.toggle("hidden");
-             });
-            
-          document.addEventListener("click", function(){
-             hubMenu.classList.add("hidden");
-             });
+                hubMenu.classList.toggle("show");
+                hubButton.classList.toggle("open");
+            });
+        
+            document.addEventListener("click", function(){
+                hubMenu.classList.remove("show");
+                hubButton.classList.remove("open");
+            });
+        
+//          document.addEventListener("click", function(){
+//             hubMenu.classList.add("hidden");
+//             });
             
             hubMenu.addEventListener("click", function(e){
               e.stopPropagation();
@@ -702,6 +726,13 @@ async function checkForUpdates() {
                 👨‍💼 Administrator
             </div>
         </div>
+    
+    <div class="hubSeparator"></div>
+      <div class="hubVersion">      
+          Namaz Time      
+          <br>      
+          Version 2.0.0      
+      </div>
     
   </body>
 </html>
