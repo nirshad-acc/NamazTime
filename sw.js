@@ -1,4 +1,4 @@
-const CACHE_NAME = 'namaz-times-v34-02-Jul-2026-1526';
+const CACHE_NAME = 'namaz-times-v35-02-Jul-2026-1552';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
