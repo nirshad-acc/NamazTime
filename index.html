@@ -85,18 +85,10 @@
         }
         
         .menu-btn{
-          flex:1;
-          border:none;
-          border-radius:22px;
-          padding:16px 12px;
-          color:white;
-          font-size:.85rem;
-          font-weight:700;
-          cursor:pointer;
+          flex:1; border:none; border-radius:22px; padding:16px 12px; color:white; font-size:.85rem; font-weight:700; cursor:pointer;
           box-shadow:0 4px 12px rgba(0,0,0,.18);
           transition:.2s;
         }
-        
         .menu-btn i{
           font-size:1.4rem;
           margin-bottom:6px;
@@ -114,6 +106,40 @@
           background:linear-gradient(135deg,#1565c0,#42a5f5);
         }
       
+        #controlHubBtn{
+            position:fixed;    bottom:18px;    left:18px;    width:52px;    height:52px;    border:none;    border-radius:50%;    cursor:pointer;
+            font-size:24px;    box-shadow:0 3px 10px rgba(0,0,0,.35);    z-index:9999;
+        }
+       #controlHubMenu{
+            position:fixed;    bottom:80px;    left:18px;    width:230px;    background:white;    border-radius:12px;
+            box-shadow:0 5px 18px rgba(0,0,0,.35);    overflow:hidden;    z-index:9999;
+            animation:menuAppear .18s ease;
+        }
+        .hidden{
+            display:none;
+        }
+        .hubItem{
+            padding:14px 16px;    cursor:pointer;    font-size:15px;    transition:.2s;
+        }
+        .hubItem:hover{
+            background:#f3f3f3;
+        }
+        .hubSeparator{
+            border-top:1px solid #ddd;
+        }
+        .adminItem{
+            color:#b00020;
+        }
+        @keyframes menuAppear{
+            from{
+                opacity:0;
+                transform:translateY(10px);
+            }
+            to{
+                opacity:1;
+                transform:translateY(0);
+            }
+        }
       
       .prayer-row { display: grid; grid-template-columns: 100px 1fr 1fr 1fr; align-items: center; padding: 14px 12px; margin-bottom: 12px; border-radius: 18px; text-align: center; gap: 5px; }
       .raised { box-shadow: 3px 3px 6px var(--shadow-dark), -2px -2px 4px var(--shadow-light); }  /* Reduced from 5px 5px 10px to a tighter, cleaner shadow */
@@ -207,6 +233,23 @@
       document.getElementById("settingsIcon").addEventListener("click", () => {
             window.open("settings.html", "_blank");
           });
+
+      const hubButton = document.getElementById("controlHubBtn");
+      const hubMenu = document.getElementById("controlHubMenu");
+
+        hubButton.addEventListener("click", function(e){
+            e.stopPropagation();
+            hubMenu.classList.toggle("hidden");
+         });
+        
+      document.addEventListener("click", function(){
+         hubMenu.classList.add("hidden");
+         });
+        
+        hubMenu.addEventListener("click", function(e){
+          e.stopPropagation();
+         });
+      
       const USE_YEAR_CACHE = true;
       const YEAR_CACHE_KEY = "prayerCache_year";
       const CACHE_MAX_AGE = 24 * 60 * 60 * 1000; // 24 hours
@@ -605,7 +648,36 @@ async function checkForUpdates() {
         }
         document.getElementById('content').innerHTML = h;
       }
+      function openSettings(){
+          window.location.href="settings.html";
+      }
+      
+      function openLocation(){
+          window.location.href="location.html";
+      }
+      
+      function openTheme(){
+          window.location.href="theme.html";
+      }
+      
+      function openMosqueInfo(){
+          window.location.href="mosque.html";
+      }
+      
+      function openNotifications(){
+          window.location.href="notifications.html";
+      }
+      
+      function openAbout(){
+          window.location.href="about.html";
+      }
+      
+      function openAdmin(){
+          window.location.href="admin.html";
+      }
+    
     </script>
+    
     <div onclick="window.location.replace('./admin.html')" style="
         position: fixed; 
         bottom: 0; 
@@ -617,5 +689,36 @@ async function checkForUpdates() {
         cursor: default;
         -webkit-tap-highlight-color: transparent;">
     </div>
+
+    <!-- Floating Control Hub Button -->
+        <button id="controlHubBtn" title="Control Hub">
+            ⚙️
+        </button>
+        <!-- Control Hub Menu -->
+        <div id="controlHubMenu" class="hidden">
+            <div class="hubItem" onclick="openSettings()">
+                ⚙️ Settings
+            </div>
+            <div class="hubItem" onclick="openLocation()">
+                📍 Location
+            </div>
+            <div class="hubItem" onclick="openTheme()">
+                🌙 Theme
+            </div>
+            <div class="hubItem" onclick="openMosqueInfo()">
+                🕌 Mosque Information
+            </div>
+            <div class="hubItem" onclick="openNotifications()">
+                🔔 Notifications
+            </div>
+            <div class="hubItem" onclick="openAbout()">
+                ℹ️ About
+            </div>
+            <div class="hubSeparator"></div>
+            <div class="hubItem adminItem" onclick="openAdmin()">
+                👨‍💼 Administrator
+            </div>
+        </div>
+    
   </body>
 </html>
