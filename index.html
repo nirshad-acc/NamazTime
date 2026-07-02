@@ -219,8 +219,18 @@
           navigator.serviceWorker.register('./sw.js')
             .then(() => console.log("Service Worker registered successfully!"))
             .catch((err) => console.error("Service worker registration failed:", err));
-        }
+                    }
+                self.addEventListener("activate", () => {
+              self.clients.matchAll().then((clients) => {
+                clients.forEach((client) => {
+                  client.postMessage({
+                    type: "SW_UPDATED"
+                  });
+                });
+              });
+            });
 
+        
         setTimeout(() => {
             checkForUpdates();
         }, 500);
