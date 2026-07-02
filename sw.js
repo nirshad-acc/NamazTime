@@ -33,6 +33,16 @@ self.addEventListener('activate', (event) => {
   return self.clients.claim();
 });
 
+self.addEventListener("activate", () => {
+  self.clients.matchAll().then((clients) => {
+    clients.forEach((client) => {
+      client.postMessage({
+        type: "SW_UPDATED"
+      });
+    });
+  });
+});
+
 // 3. Fetch Event: Intercepts requests to serve cached files instantly when offline
 self.addEventListener('fetch', (event) => {
   // We only want to handle local files (not your live Google Apps Script API calls)
