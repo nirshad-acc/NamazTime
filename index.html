@@ -216,21 +216,6 @@
       // REPLACE THIS STRING WITH YOUR DEPLOYED APPS SCRIPT WEB APP URL
       const API_URL = "https://script.google.com/macros/s/AKfycbznuarW_UGUZyZKuapdjhtSlIkC1ut71CfsOq0h1XvGmG02R6vaZB_Vf9JXFkD3xaosVw/exec";
         
-      const hubButton = document.getElementById("controlHubBtn");
-      const hubMenu = document.getElementById("controlHubMenu");
-
-        hubButton.addEventListener("click", function(e){
-            e.stopPropagation();
-            hubMenu.classList.toggle("hidden");
-         });
-        
-      document.addEventListener("click", function(){
-         hubMenu.classList.add("hidden");
-         });
-        
-        hubMenu.addEventListener("click", function(e){
-          e.stopPropagation();
-         });
       
       const USE_YEAR_CACHE = true;
       const YEAR_CACHE_KEY = "prayerCache_year";
@@ -249,6 +234,22 @@
       window.onload = async () => {
         startClock();
         document.getElementById('datePicker').valueAsDate = new Date();
+      
+        const hubButton = document.getElementById("controlHubBtn");
+        const hubMenu = document.getElementById("controlHubMenu");
+
+            hubButton.addEventListener("click", function(e){
+                e.stopPropagation();
+                hubMenu.classList.toggle("hidden");
+             });
+            
+          document.addEventListener("click", function(){
+             hubMenu.classList.add("hidden");
+             });
+            
+            hubMenu.addEventListener("click", function(e){
+              e.stopPropagation();
+             });
       
         if (USE_YEAR_CACHE) {
           yearData = await fetchWholeYear();
