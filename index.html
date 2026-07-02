@@ -23,6 +23,22 @@
       
       h1 { color: var(--primary); text-align: center; font-size: 0.95rem; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 900; }
 
+      #topHeader {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 10px 14px;
+            }
+            
+            #settingsIcon {
+              font-size: 20px;
+              cursor: pointer;
+              opacity: 0.8;
+            }
+            
+            #settingsIcon:hover {
+              opacity: 1;
+            }
       .top-banner { display: flex; justify-content: space-between; margin-bottom: 20px; padding: 12px; border-radius: 15px; background: var(--bg); box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light); }
       .info-unit { display: flex; flex-direction: column; justify-content: center; }
       .label-st { font-size: 0.55rem; color: #5a7d80; text-transform: uppercase; font-weight: 800; margin-bottom: 3px; }
@@ -128,7 +144,10 @@
     <div class="container">
       <div class="header-block">
           <h1>Prayer Dashboard For Mauritius</h1>
-          
+
+           <div id="settingsIcon" title="Settings">
+              ⚙️
+            </div>
           <div class="top-banner">
             <div class="info-unit" style="flex: 1;">
               <span class="label-st">Today's Date</span>
@@ -184,7 +203,10 @@
     <script>
       // REPLACE THIS STRING WITH YOUR DEPLOYED APPS SCRIPT WEB APP URL
       const API_URL = "https://script.google.com/macros/s/AKfycbznuarW_UGUZyZKuapdjhtSlIkC1ut71CfsOq0h1XvGmG02R6vaZB_Vf9JXFkD3xaosVw/exec";
-
+        
+      document.getElementById("settingsIcon").addEventListener("click", () => {
+            window.open("settings.html", "_blank");
+          });
       const USE_YEAR_CACHE = true;
       const YEAR_CACHE_KEY = "prayerCache_year";
       const CACHE_MAX_AGE = 24 * 60 * 60 * 1000; // 24 hours
@@ -236,6 +258,8 @@
         }, 500);
       };
 
+
+      
       function getLocalDateString() {
         const now = new Date();
       
