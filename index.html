@@ -27,12 +27,12 @@
               display: flex;              justify-content: space-between;              align-items: center;              padding: 10px 14px;
             }
             
-            #settingsIcon {              font-size: 20px;              cursor: pointer;              opacity: 0.8;
-            }
-            
-            #settingsIcon:hover {
-              opacity: 1;
-            }
+      #settingsIcon {              font-size: 20px;              cursor: pointer;              opacity: 0.8;
+      }
+      
+      #settingsIcon:hover {
+        opacity: 1;
+      }
       .top-banner { display: flex; justify-content: space-between; margin-bottom: 20px; padding: 12px; border-radius: 15px; background: var(--bg); box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light); }
       .info-unit { display: flex; flex-direction: column; justify-content: center; }
       .label-st { font-size: 0.55rem; color: #5a7d80; text-transform: uppercase; font-weight: 800; margin-bottom: 3px; }
@@ -97,17 +97,18 @@
         }
       
         #controlHubBtn{
-            position:fixed;    bottom:18px;    left:18px;    width:52px;    height:52px;    border:none;    border-radius:50%;    cursor:pointer;
-            font-size:24px;    box-shadow:0 3px 10px rgba(0,0,0,.35);    z-index:9999;
-            transition:        transform .25s ease,        box-shadow .25s ease;
+            position:fixed;    bottom:18px;    left:18px;    width:32px;    height:32px;    border:none;    border-radius:50%;    cursor:pointer;
+            font-size:24px;    box-shadow:0 3px 10px rgba(0,0,0,.35);    z-index:9999; opacity:.55;
+            transition:        opacity .25s ease,    transform .25s ease,        box-shadow .25s ease;
+            
         #controlHubBtn.open{
             transform:rotate(180deg);            box-shadow:0 6px 18px rgba(0,0,0,.40);
         }
-
-    
-   
+        #controlHubBtn:hover{
+            opacity:.9;
         }
-       #controlHubMenu{
+          
+        #controlHubMenu{
             position:fixed;    bottom:80px;    left:18px;    width:230px;    background:white;    border-radius:12px;
             box-shadow:0 5px 18px rgba(0,0,0,.35);    overflow:hidden;    z-index:9999;
             opacity:0;    transform:translateY(15px);    visibility:hidden;
@@ -660,23 +661,28 @@ async function checkForUpdates() {
       }
       
       function openLocation(){
-          window.location.href="location.html";
+        //  window.location.href="location.html";
+         alert("Coming soon");
       }
       
       function openTheme(){
-          window.location.href="theme.html";
+       //   window.location.href="theme.html";
+         alert("Coming soon");
       }
       
       function openMosqueInfo(){
-          window.location.href="mosque.html";
+       //   window.location.href="mosque.html";
+         alert("Coming soon");
       }
       
       function openNotifications(){
-          window.location.href="notifications.html";
+       //   window.location.href="notifications.html";
+         alert("Coming soon");
       }
       
       function openAbout(){
-          window.location.href="about.html";
+        //  window.location.href="about.html";
+         alert("Coming soon");
       }
       
       function openAdmin(){
