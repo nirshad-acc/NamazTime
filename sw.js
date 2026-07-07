@@ -1,4 +1,4 @@
-const CACHE_NAME = 'namaz-times-v45-07-Jul-2026-1544_removing_2ndSettingsIcon-UX';
+const CACHE_NAME = 'namaz-times-v46-07-Jul-2026-1558_removing_2ndSettingsIcon-UX';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
