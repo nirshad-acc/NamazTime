@@ -242,6 +242,11 @@
       
       let yearData = null;
 
+      const ASR_METHOD = {
+          HANAFI: "hanafi",
+          SHAAFII: "shaafii"
+      };
+
       function startClock() {
         setInterval(() => {
           const now = new Date();
@@ -258,25 +263,20 @@
         const hubMenu = document.getElementById("controlHubMenu");
 
             hubButton.addEventListener("click", function(e){
-
                 e.stopPropagation();
                 hubMenu.classList.toggle("show");
                 hubButton.classList.toggle("open");
             });
-        
             document.addEventListener("click", function(){
                 hubMenu.classList.remove("show");
                 hubButton.classList.remove("open");
             });
-        
 //          document.addEventListener("click", function(){
 //             hubMenu.classList.add("hidden");
 //             });
-            
             hubMenu.addEventListener("click", function(e){
               e.stopPropagation();
              });
-      
         if (USE_YEAR_CACHE) {
           yearData = await fetchWholeYear();
           renderDayData(
@@ -287,7 +287,6 @@
         } else {
 //          fetchData();
         } 
-
         // Automatically registers the background service worker script
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('./sw.js')
@@ -303,15 +302,127 @@
                 });
               });
             });
-
-        
         setTimeout(() => {
             checkForUpdates();
         }, 500);
       };
 
 
+function adjustInterval(start, end, offsetMinutes) {
+    return {
+        start: adjustTime(start, offsetMinutes),
+        end: adjustTime(end, offsetMinutes)
+    };
+}
+
+function getPersonalisedDayData(dayData) {
+    const d = JSON.parse(JSON.stringify(dayData));
+    const offset = Number(personalSettings.locationOffset);
+    //
+    // MORNING PRAYERS
+    //
+    d.subhe_sadiq = adjustTime(dayData.subhe_sadiq, -offset);
+    d.fajr_start   = adjustTime(dayData.fajr_start, -offset);
+    //
+    // SUNRISE (INTERVAL)
+    //
+    const sunrise = adjustInterval(
+        dayData.sunrise_start,
+        dayData.sunrise_end,
+        -offset
+    );
+
+    d.sunrise_start = sunrise.start;
+    d.sunrise_end   = sunrise.end;
+
+    //
+    // ZAWAAL (NO CHANGE)
+    //
+    d.zawaal_start = dayData.zawaal_start;
+    d.zawaal_end   = dayData.zawaal_end;
+
+    //
+    // ASR
+    //
+    let asr = adjustTime(dayData.asr_start, -offset);
+
+    if (personalSettings.asrMethod === ASR_METHOD.SHAAFII) {
+        asr = adjustTime(asr, -60);
+    }
+    d.asr_start = asr;
+    //
+    // EVENING PRAYERS
+    //
+    d.maghrib_start = adjustTime(dayData.maghrib_start, offset);
+    d.esha_start    = adjustTime(dayData.esha_start, offset);
+    //
+    // SUNSET (INTERVAL)
+    //
+    const sunset = adjustInterval(
+        dayData.sunset_start,
+        dayData.sunset_end,
+        offset
+    );
+    d.sunset_start = sunset.start;
+    d.sunset_end   = sunset.end;
+    return d;
+}
+
+function renderPrayerUI(currentDayData) {
+
+    // 1. Apply personalisation
+    const displayData = getPersonalisedDayData(currentDayData);
+
+    // 2. Render table
+    renderDayData(displayData);
+
+    // 3. Update banner
+    updatePersonalBanner();
+
+}
+
+function updatePersonalBanner() {
+    const banner = document.getElementById("personalBanner");
+    if (!banner) return;
+    if (personalSettingsActive()) {
+        banner.style.display = "block";
+        banner.innerHTML = `
+            ℹ️ <b>Personal Prayer Settings Active</b><br>
+            Location Offset: ${personalSettings.locationOffset} min<br>
+            Asr Method: ${personalSettings.asrMethod}<br>
+            <button onclick="resetPersonalSettings()">Reset to Default</button>
+        `;
+    } else {
+        banner.style.display = "none";
+    }
+}
+
+function resetPersonalSettings() {
+    personalSettings = {
+        locationOffset: 0,
+        asrMethod: ASR_METHOD.HANAFI
+    };
+    savePersonalSettings(personalSettings);
+    refreshPrayerView();
+}
+
+function refreshPrayerView() {
+    const d = getCurrentDayData(); // your cached day fetch
+    renderPrayerUI(d);
+}
       
+function onOffsetChange(value) {
+    personalSettings.locationOffset = Number(value);
+    savePersonalSettings(personalSettings);
+    refreshPrayerView();
+}
+
+function onAsrMethodChange(value) {
+    personalSettings.asrMethod = value;
+    savePersonalSettings(personalSettings);
+    refreshPrayerView();
+}
+
       function getLocalDateString() {
         const now = new Date();
       
