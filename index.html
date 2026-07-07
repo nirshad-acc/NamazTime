@@ -423,6 +423,35 @@ function onAsrMethodChange(value) {
     refreshPrayerView();
 }
 
+function changeOffset(step) {
+    personalSettings.locationOffset += step;
+    document.getElementById("offsetValue").innerText =
+        personalSettings.locationOffset + " min";
+    savePersonalSettings(personalSettings);
+    refreshPrayerView();
+}
+
+function setAsrMethod(method) {
+    personalSettings.asrMethod = method;
+    savePersonalSettings(personalSettings);
+    refreshPrayerView();
+}
+
+function openPrayerSettings() {
+    document.getElementById("prayerSettingsModal").style.display = "block";
+    document.getElementById("offsetValue").innerText =
+        personalSettings.locationOffset + " min";
+    document.querySelector(
+        `input[name="asrMethod"][value="${personalSettings.asrMethod}"]`
+    ).checked = true;
+}
+
+function closePrayerSettings() {
+    document.getElementById("prayerSettingsModal").style.display = "none";
+}
+      
+      
+      
       function getLocalDateString() {
         const now = new Date();
       
@@ -798,9 +827,23 @@ async function checkForUpdates() {
       }
       
       function openAdmin(){
-          window.location.href="admin.html";
+//          window.location.href="admin.html";
+          alert("Removed for Normal user");
       }
-    
+
+function openPrayerSettings() {
+    document.getElementById("prayerSettingsModal").style.display = "block";
+    document.getElementById("offsetValue").innerText =
+        personalSettings.locationOffset + " min";
+    document.querySelector(
+        `input[name="asrMethod"][value="${personalSettings.asrMethod}"]`
+    ).checked = true;
+}
+
+function closePrayerSettings() {
+    document.getElementById("prayerSettingsModal").style.display = "none";
+}
+   
     </script>
     
     <div onclick="window.location.replace('./admin.html')" style="
@@ -821,8 +864,8 @@ async function checkForUpdates() {
         </button>
         <!-- Control Hub Menu -->
         <div id="controlHubMenu" class="hidden">
-            <div class="hubItem" onclick="openSettings()">
-                ⚙️ Settings
+            <div class="hubItem" onclick="openPrayerSettings()">
+                ⚙️ Prayer Time Settings
             </div>
             <div class="hubItem" onclick="openLocation()">
                 📍 Location
@@ -850,6 +893,52 @@ async function checkForUpdates() {
                   v38-03-Jul-2026-1424 <br>Version 2.0.0      
               </div>          
         </div>
+    
+    <!-- Prayer Time Settings Button -->
+<button id="settingsBtn" onclick="openPrayerSettings()">
+    ⚙️ Settings
+</button>
+
+<!-- Settings Modal -->
+<div id="prayerSettingsModal" class="modal">
+    <div class="modal-content">
+        <h3>Personal Prayer Settings</h3>
+        <label>Location Offset</label>
+        <div class="offsetControls">
+            <button onclick="changeOffset(-1)">−</button>
+            <span id="offsetValue">0 min</span>
+            <button onclick="changeOffset(1)">+</button>
+        </div>
+        <hr>
+        <label>Asr Calculation</label>
+        <br>
+        <label>
+            <input
+                type="radio"
+                name="asrMethod"
+                value="hanafi"
+                onchange="setAsrMethod(this.value)">
+            Hanafi
+        </label>
+        <br>
+        <label>
+            <input
+                type="radio"
+                name="asrMethod"
+                value="shaafii"
+                onchange="setAsrMethod(this.value)">
+            Shaafi' / Hanbali
+        </label>
+        <br><br>
+        <button onclick="resetPersonalSettings()">
+            Reset to Default
+        </button>
+        <button onclick="closePrayerSettings()">
+            Close
+        </button>
+    </div>
+
+</div>
     
    
     
