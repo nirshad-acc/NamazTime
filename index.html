@@ -149,6 +149,20 @@
                 transform:translateY(0);
             }
         }
+      .modalOverlay{  position:fixed;  inset:0;  background:rgba(0,0,0,.45);  display:flex;  justify-content:center;  align-items:center;  z-index:5000;
+      }
+      .modalCard{  width:340px;  max-width:92%;  background:white;   border-radius:12px;    padding:20px;   box-shadow:0 10px 25px rgba(0,0,0,.25);
+      }
+      .settingRow{          display:flex;          flex-direction:column;          gap:10px;
+      }
+      .offsetBox{          display:flex;          justify-content:center;          align-items:center;          gap:15px;
+      }
+      .offsetBox button{          width:36px;          height:36px;
+      }
+      .buttonRow{          display:flex;          justify-content:space-between;
+      }
+
+
       
       .prayer-row { display: grid; grid-template-columns: 100px 1fr 1fr 1fr; align-items: center; padding: 14px 12px; margin-bottom: 12px; border-radius: 18px; text-align: center; gap: 5px; }
       .raised { box-shadow: 3px 3px 6px var(--shadow-dark), -2px -2px 4px var(--shadow-light); }  /* Reduced from 5px 5px 10px to a tighter, cleaner shadow */
@@ -369,16 +383,12 @@ function getPersonalisedDayData(dayData) {
 }
 
 function renderPrayerUI(currentDayData) {
-
     // 1. Apply personalisation
     const displayData = getPersonalisedDayData(currentDayData);
-
     // 2. Render table
     renderDayData(displayData);
-
     // 3. Update banner
     updatePersonalBanner();
-
 }
 
 function updatePersonalBanner() {
@@ -437,18 +447,24 @@ function setAsrMethod(method) {
     refreshPrayerView();
 }
 
-function openPrayerSettings() {
-    document.getElementById("prayerSettingsModal").style.display = "block";
-    document.getElementById("offsetValue").innerText =
-        personalSettings.locationOffset + " min";
-    document.querySelector(
-        `input[name="asrMethod"][value="${personalSettings.asrMethod}"]`
-    ).checked = true;
+function openPrayerSettings(){
+    document.getElementById("prayerSettingsModal").style.display="flex";
+    updatePrayerSettingsDialog();
 }
 
-function closePrayerSettings() {
-    document.getElementById("prayerSettingsModal").style.display = "none";
+function closePrayerSettings(){
+    document.getElementById("prayerSettingsModal").style.display="none";
+
 }
+// function openPrayerSettings() {
+//    document.getElementById("prayerSettingsModal").style.display = "block";
+//    document.getElementById("offsetValue").innerText =
+//        personalSettings.locationOffset + " min";
+//    document.querySelector(
+//        `input[name="asrMethod"][value="${personalSettings.asrMethod}"]`
+//    ).checked = true;
+//}
+
       
       
       
@@ -728,25 +744,18 @@ async function checkForUpdates() {
       document.getElementById('lastUpd').innerText = "Last Sync: " + new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
 
         let r = null;
-        
         let daysArray = d.months[targetMonth].days;
-        
         for (let i = 1; i < daysArray.length; i++) {
-        
           if (parseInt(daysArray[i][0], 10) === targetDay) {
-        
             r = daysArray[i];
-        
             break;
           }
         }
-
-        
         if (!r) {
           document.getElementById('content').innerHTML = '<div style="text-align:center; padding: 20px; color: var(--warning); font-weight:bold;">No data found for this date.</div>';
           return;
         }
-
+        r = getPersonalisedPrayerRow(r);
         const tripleRow = (name, sub, s, a, j) => `
           <div class="prayer-row raised">
             <div class="n-stack"><span class="p-sub">${sub}</span><span class="p-name">${name}</span></div>
@@ -843,7 +852,66 @@ function openPrayerSettings() {
 function closePrayerSettings() {
     document.getElementById("prayerSettingsModal").style.display = "none";
 }
-   
+
+function updatePrayerSettingsDialog(){
+    document.getElementById("offsetValue").innerText =
+        personalSettings.locationOffset + " min";
+    document.querySelector(
+        'input[value="'+personalSettings.asrMethod+'"]'
+    ).checked = true;
+    const summary = document.getElementById("settingsSummary");
+
+    if(personalSettingsActive()){
+        summary.innerHTML=`
+            <b>ℹ Showing adjusted prayer times</b><br><br>
+            Location Offset :
+            ${personalSettings.locationOffset} min<br>
+            Asr Method :
+            ${
+                personalSettings.asrMethod===ASR_METHOD.HANAFI
+                ? "Hanafi"
+                : "Shaafi' / Hanbali"
+            }
+        `;
+    }else{
+        summary.innerHTML=
+            "<b>✓ Official mosque timetable</b>";
+    }
+}
+
+const MIN_OFFSET=-30;
+const MAX_OFFSET=30;
+
+function changeOffset(step){
+
+    personalSettings.locationOffset+=step;
+    if(personalSettings.locationOffset<MIN_OFFSET)
+        personalSettings.locationOffset=MIN_OFFSET;
+    if(personalSettings.locationOffset>MAX_OFFSET)
+        personalSettings.locationOffset=MAX_OFFSET;
+    savePersonalSettings(personalSettings);
+    updatePrayerSettingsDialog();
+    refreshPrayerView();
+}
+
+
+function setAsrMethod(method){
+    personalSettings.asrMethod=method;
+    savePersonalSettings(personalSettings);
+    updatePrayerSettingsDialog();
+    refreshPrayerView();
+}
+
+function resetPersonalSettings(){
+    personalSettings.locationOffset=0;
+    personalSettings.asrMethod=ASR_METHOD.HANAFI;
+    savePersonalSettings(personalSettings);
+    updatePrayerSettingsDialog();
+    refreshPrayerView();
+}
+
+
+
     </script>
     
     <div onclick="window.location.replace('./admin.html')" style="
@@ -899,45 +967,51 @@ function closePrayerSettings() {
     ⚙️ Settings
 </button>
 
-<!-- Settings Modal -->
-<div id="prayerSettingsModal" class="modal">
-    <div class="modal-content">
-        <h3>Personal Prayer Settings</h3>
-        <label>Location Offset</label>
-        <div class="offsetControls">
-            <button onclick="changeOffset(-1)">−</button>
-            <span id="offsetValue">0 min</span>
-            <button onclick="changeOffset(1)">+</button>
+<!-- Prayer Time Settings Modal -->
+<div id="prayerSettingsModal" class="modalOverlay" style="display:none;">
+    <div class="modalCard">
+        <h2>Prayer Time Settings</h2>
+        <hr>
+        <div class="settingRow">
+            <span>Location Offset</span>
+            <div class="offsetBox">
+                <button onclick="changeOffset(-1)">−</button>
+                <span id="offsetValue">0 min</span>
+                <button onclick="changeOffset(1)">+</button>
+            </div>
         </div>
         <hr>
-        <label>Asr Calculation</label>
-        <br>
-        <label>
-            <input
-                type="radio"
-                name="asrMethod"
-                value="hanafi"
-                onchange="setAsrMethod(this.value)">
-            Hanafi
-        </label>
-        <br>
-        <label>
-            <input
-                type="radio"
-                name="asrMethod"
-                value="shaafii"
-                onchange="setAsrMethod(this.value)">
-            Shaafi' / Hanbali
-        </label>
-        <br><br>
-        <button onclick="resetPersonalSettings()">
-            Reset to Default
-        </button>
-        <button onclick="closePrayerSettings()">
-            Close
-        </button>
+        <div class="settingRow">
+            <span>Asr Calculation</span>
+            <label>
+                <input
+                    type="radio"
+                    name="asrMethod"
+                    value="hanafi"
+                    onchange="setAsrMethod(this.value)">
+                Hanafi (Default)
+            </label>
+            <label>
+                <input
+                    type="radio"
+                    name="asrMethod"
+                    value="shaafii"
+                    onchange="setAsrMethod(this.value)">
+                Shaafi' / Hanbali
+            </label>
+        </div>
+        <hr>
+        <div id="settingsSummary"></div>
+        <hr>
+        <div class="buttonRow">
+            <button onclick="resetPersonalSettings()">
+                Reset to Default
+            </button>
+            <button onclick="closePrayerSettings()">
+                Close
+            </button>
+        </div>
     </div>
-
 </div>
     
    
