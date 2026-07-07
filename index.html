@@ -755,7 +755,7 @@ async function checkForUpdates() {
           document.getElementById('content').innerHTML = '<div style="text-align:center; padding: 20px; color: var(--warning); font-weight:bold;">No data found for this date.</div>';
           return;
         }
-        r = getPersonalisedPrayerRow(r);
+//        r = getPersonalisedPrayerRow(r);
         const tripleRow = (name, sub, s, a, j) => `
           <div class="prayer-row raised">
             <div class="n-stack"><span class="p-sub">${sub}</span><span class="p-name">${name}</span></div>
@@ -962,10 +962,10 @@ function resetPersonalSettings(){
               </div>          
         </div>
     
-    <!-- Prayer Time Settings Button -->
-<button id="settingsBtn" onclick="openPrayerSettings()">
-    ⚙️ Settings
-</button>
+//    <!-- Prayer Time Settings Button -->
+//  <button id="settingsBtn" onclick="openPrayerSettings()">
+//      ⚙️ Settings
+//  </button>
 
 <!-- Prayer Time Settings Modal -->
 <div id="prayerSettingsModal" class="modalOverlay" style="display:none;">
