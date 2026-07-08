@@ -251,6 +251,9 @@
           SHAAFII: "shaafii"
       };
 
+      const MIN_OFFSET=-30;
+      const MAX_OFFSET=30;
+      
       function startClock() {
         setInterval(() => {
           const now = new Date();
@@ -871,8 +874,6 @@ function updatePrayerSettingsDialog(){
     }
 }
 
-const MIN_OFFSET=-30;
-const MAX_OFFSET=30;
 
 function changeOffset(step){
     personalSettings.locationOffset+=step;
