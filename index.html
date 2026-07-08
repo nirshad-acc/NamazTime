@@ -71,10 +71,8 @@
       .header-block.hidden {
           transform: translateY(-100%);
         }
-
           .button-row{          display:flex;          gap:14px;          margin:20px 0 10px;
         }
-        
         .menu-btn{
           flex:1; border:none; border-radius:22px; padding:16px 12px; color:white; font-size:.85rem; font-weight:700; cursor:pointer;
           box-shadow:0 4px 12px rgba(0,0,0,.18);
@@ -83,19 +81,15 @@
         .menu-btn i{
           font-size:1.4rem;          margin-bottom:6px;
         }
-        
         .menu-btn:active{
           transform:scale(.96);
         }
-        
         .calendar-btn{
           background:linear-gradient(135deg,#1e7f46,#33a05a);
         }
-        
         .about-btn{
           background:linear-gradient(135deg,#1565c0,#42a5f5);
         }
-      
         #controlHubBtn{
             position:fixed;    bottom:18px;    left:18px;    width:32px;    height:32px;   display: flex; justify-content: center;  align-items: center;   border:none;    border-radius:50%;    cursor:pointer;
             font-size:20px;    line-height: 1;  box-shadow:0 3px 10px rgba(0,0,0,.35);    z-index:9999; opacity:.55;
@@ -113,11 +107,7 @@
             position:fixed;    bottom:80px;    left:18px;    width:230px;    background:white;    border-radius:12px;
             box-shadow:0 5px 18px rgba(0,0,0,.35);    overflow:hidden;    z-index:9999;
             opacity:0;    transform:translateY(15px);    visibility:hidden;
-
-            transition:
-                opacity .25s ease,
-                transform .25s ease,
-                visibility .25s;
+            transition:   opacity .25s ease,    transform .25s ease,   visibility .25s;
                 }
       #controlHubMenu.show{
             opacity:1;
@@ -433,14 +423,16 @@ function onAsrMethodChange(value) {
     refreshPrayerView();
 }
 
-function changeOffset(step) {
+<!-- 
+function XXchangeOffset(step) {
     personalSettings.locationOffset += step;
     document.getElementById("offsetValue").innerText =
         personalSettings.locationOffset + " min";
     savePersonalSettings(personalSettings);
     refreshPrayerView();
 }
-
+-->
+      
 function setAsrMethod(method) {
     personalSettings.asrMethod = method;
     savePersonalSettings(personalSettings);
@@ -883,7 +875,6 @@ const MIN_OFFSET=-30;
 const MAX_OFFSET=30;
 
 function changeOffset(step){
-
     personalSettings.locationOffset+=step;
     if(personalSettings.locationOffset<MIN_OFFSET)
         personalSettings.locationOffset=MIN_OFFSET;
@@ -893,7 +884,6 @@ function changeOffset(step){
     updatePrayerSettingsDialog();
     refreshPrayerView();
 }
-
 
 function setAsrMethod(method){
     personalSettings.asrMethod=method;
@@ -909,8 +899,6 @@ function resetPersonalSettings(){
     updatePrayerSettingsDialog();
     refreshPrayerView();
 }
-
-
 
     </script>
     
