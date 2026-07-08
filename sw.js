@@ -1,4 +1,4 @@
-const CACHE_NAME = 'namaz-times-v46-07-Jul-2026-1558_removing_2ndSettingsIcon-UX';
+const CACHE_NAME = 'namaz-times-v47-08-Jul-2026-1330_activating_offsetBox';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
