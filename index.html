@@ -426,15 +426,14 @@ function onAsrMethodChange(value) {
     refreshPrayerView();
 }
 
-<!-- 
-function XXchangeOffset(step) {
+
+function changeOffset(step) {
     personalSettings.locationOffset += step;
     document.getElementById("offsetValue").innerText =
         personalSettings.locationOffset + " min";
-    savePersonalSettings(personalSettings);
-    refreshPrayerView();
+//    savePersonalSettings(personalSettings);
+ //   refreshPrayerView();
 }
--->
       
 function setAsrMethod(method) {
     personalSettings.asrMethod = method;
@@ -875,7 +874,7 @@ function updatePrayerSettingsDialog(){
 }
 
 
-function changeOffset(step){
+function XXXchangeOffset(step){
     personalSettings.locationOffset+=step;
     if(personalSettings.locationOffset<MIN_OFFSET)
         personalSettings.locationOffset=MIN_OFFSET;
