@@ -1,4 +1,6 @@
-const CACHE_NAME = 'namaz-times-v52-09-Jul-2026-1254_offSet_plus_minus';
+importScripts('version.js');
+
+const CACHE_NAME = `namaz-times-${APP_INFO.cacheVersion}`;
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
