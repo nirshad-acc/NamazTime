@@ -246,10 +246,8 @@
           HANAFI: "hanafi",
           SHAAFII: "shaafii"
       };
-        let personalSettings = {
-            locationOffset: 0,
-            asrMethod: ASR_METHOD.HANAFI
-        };
+      
+      let personalSettings = loadPersonalSettings();
       
       const MIN_OFFSET=-30;
       const MAX_OFFSET=30;
@@ -385,6 +383,26 @@ function renderPrayerUI(currentDayData) {
     updatePersonalBanner();
 }
 
+function savePersonalSettings(settings) {
+    localStorage.setItem(
+        "personalPrayerSettings",
+        JSON.stringify(settings)
+    );
+}
+
+function loadPersonalSettings() {
+    const saved = localStorage.getItem("personalPrayerSettings");
+    if (saved) {
+        return JSON.parse(saved);
+    }
+    return {
+        locationOffset: 0,
+        asrMethod: ASR_METHOD.HANAFI
+    };
+}
+
+
+      
 function updatePersonalBanner() {
     const banner = document.getElementById("personalBanner");
     if (!banner) return;
