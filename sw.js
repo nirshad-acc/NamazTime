@@ -1,6 +1,5 @@
-importScripts('version.js');
 
-const CACHE_NAME = `namaz-times-${APP_INFO.cacheVersion}`;
+const CACHE_NAME = `namaz-times-V54`;
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
