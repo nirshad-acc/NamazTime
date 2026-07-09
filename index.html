@@ -146,7 +146,7 @@
       }
       .buttonRow{          display:flex;          justify-content:space-between;
       }
-
+      .asr-option {    display:flex;    align-items:center;    gap:10px;    cursor:pointer;    padding:8px 0;  }
 
       
       .prayer-row { display: grid; grid-template-columns: 100px 1fr 1fr 1fr; align-items: center; padding: 14px 12px; margin-bottom: 12px; border-radius: 18px; text-align: center; gap: 5px; }
@@ -990,23 +990,23 @@ function resetPersonalSettings(){
             </div>
         </div>
         <hr>
-        <div class="settingRow">
-            <span>Asr Calculation</span>
-            <label>
-                <input
+        <div class="asr-options">
+
+            <label class="asr-option">
+                <input 
                     type="radio"
                     name="asrMethod"
                     value="hanafi"
                     onchange="setAsrMethod(this.value)">
-                Hanafi (Default)
+                <span>Hanafi (Default)</span>
             </label>
-            <label>
-                <input
+            <label class="asr-option">
+                <input 
                     type="radio"
                     name="asrMethod"
                     value="shaafii"
                     onchange="setAsrMethod(this.value)">
-                Shaafi' / Hanbali
+                <span>Shaafi' / Hanbali</span>
             </label>
         </div>
         <hr>
