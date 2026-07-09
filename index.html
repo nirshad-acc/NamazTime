@@ -313,6 +313,10 @@
         setTimeout(() => {
             checkForUpdates();
         }, 500);
+     
+        document.getElementById("appVersion").textContent =
+        `Version ${APP_INFO.version} (${APP_INFO.cacheVersion})`;
+      
       };
 
 
@@ -948,7 +952,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time      
                   <br>      
-                  v52-09-Jul-2026-1250 <br>Version 2.0.0      
+                 <span id="appVersion"></span>     
               </div>          
         </div>
     
