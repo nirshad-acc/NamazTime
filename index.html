@@ -23,16 +23,11 @@
       
       h1 { color: var(--primary); text-align: center; font-size: 0.95rem; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 900; }
 
-      #topHeader {
-              display: flex;              justify-content: space-between;              align-items: center;              padding: 10px 14px;
+      #topHeader { display: flex;    justify-content: space-between;   align-items: center;  padding: 10px 14px;
             }
-            
-      #settingsIcon {              font-size: 20px;              cursor: pointer;              opacity: 0.8;
-      }
+      #settingsIcon {  font-size: 20px;  cursor: pointer;  opacity: 0.8;   }
       
-      #settingsIcon:hover {
-        opacity: .9;
-      }
+      #settingsIcon:hover {   opacity: .9;   }
       .top-banner { display: flex; justify-content: space-between; margin-bottom: 20px; padding: 12px; border-radius: 15px; background: var(--bg); box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light); }
       .info-unit { display: flex; flex-direction: column; justify-content: center; }
       .label-st { font-size: 0.55rem; color: #5a7d80; text-transform: uppercase; font-weight: 800; margin-bottom: 3px; }
@@ -250,7 +245,11 @@
           HANAFI: "hanafi",
           SHAAFII: "shaafii"
       };
-
+        let personalSettings = {
+            locationOffset: 0,
+            asrMethod: ASR_METHOD.HANAFI
+        };
+      
       const MIN_OFFSET=-30;
       const MAX_OFFSET=30;
       
@@ -428,14 +427,10 @@ function onAsrMethodChange(value) {
 
 
 function changeOffset(step) {
-         alert(typeof personalSettings.locationOffset);
+         personalSettings.locationOffset += step;
+         document.getElementById("offsetValue").innerText =
+         personalSettings.locationOffset + " min";
 
-  
-  //    personalSettings.locationOffset += step;
-//    document.getElementById("offsetValue").innerText =
-//        personalSettings.locationOffset + " min";
-
-  
   //    savePersonalSettings(personalSettings);
  //   refreshPrayerView();
 }
