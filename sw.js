@@ -1,5 +1,5 @@
 
-const CACHE_NAME = `namaz-times-V57`;
+const CACHE_NAME = `namaz-times-V58`;
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -54,15 +54,49 @@ self.addEventListener('activate', (event) => {
   );
 });
 // 3. Fetch Event: Intercepts requests to serve cached files instantly when offline
-self.addEventListener('fetch', (event) => {
+//self.addEventListener('fetch', (event) => {
   // We only want to handle local files (not your live Google Apps Script API calls)
-  if (event.request.url.includes('script.google.com')) {
-    return; // Let the browser handle live API data requests normally
-  }
+//  if (event.request.url.includes('script.google.com')) {
+//    return; // Let the browser handle live API data requests normally
+//  }
 
+//  event.respondWith(
+//    caches.match(event.request).then((cachedResponse) => {
+/  /    // Return the cached file if found, otherwise download it from the network
+      return cachedResponse || fetch(event.request);
+//    })
+ // );
+//});
+
+// 3. Fetch Event
+self.addEventListener('fetch', (event) => {
+  // Never cache Google Apps Script requests
+  if (event.request.url.includes('script.google.com')) {
+    return;
+  }
+  // Always try to get the latest HTML when online
+  if (
+    event.request.mode === 'navigate' ||
+    event.request.destination === 'document'
+  ) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put('./index.html', copy);
+          });
+          return response;
+        })
+        .catch(() => {
+          return caches.match('./index.html');
+        })
+    );
+    return;
+  }
+  // Everything else stays Cache First
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      // Return the cached file if found, otherwise download it from the network
       return cachedResponse || fetch(event.request);
     })
   );
