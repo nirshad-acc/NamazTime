@@ -63,7 +63,7 @@ self.addEventListener('activate', (event) => {
 //  event.respondWith(
 //    caches.match(event.request).then((cachedResponse) => {
 /  /    // Return the cached file if found, otherwise download it from the network
-      return cachedResponse || fetch(event.request);
+//      return cachedResponse || fetch(event.request);
 //    })
  // );
 //});
