@@ -292,21 +292,23 @@
         } else {
 //          fetchData();
         } 
+        
         // Automatically registers the background service worker script
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('./sw.js')
-            .then(() => console.log("Service Worker registered successfully!"))
-            .catch((err) => console.error("Service worker registration failed:", err));
-                    }
-                self.addEventListener("activate", () => {
-              self.clients.matchAll().then((clients) => {
-                clients.forEach((client) => {
-                  client.postMessage({
-                    type: "SW_UPDATED"
+              .then((registration) => {
+                  console.log("Service Worker registered successfully!");
+                  // Ask the browser to check for a newer SW
+                  registration.update();
+                  navigator.serviceWorker.addEventListener('controllerchange', () => {
+                      console.log("New Service Worker has taken control.");
                   });
-                });
+              })
+              .catch((err) => {
+                  console.error("Service Worker registration failed:", err);
               });
-            });
+              }
+          
         setTimeout(() => {
             checkForUpdates();
         }, 500);
@@ -966,7 +968,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time      
                   <br>      
-                 Version V56    
+                 Version V57    
               </div>          
         </div>
     
