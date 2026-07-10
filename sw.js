@@ -1,5 +1,5 @@
 
-const CACHE_NAME = `namaz-times-V56`;
+const CACHE_NAME = `namaz-times-V57`;
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
