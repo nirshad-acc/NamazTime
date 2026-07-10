@@ -300,9 +300,16 @@
                   console.log("Service Worker registered successfully!");
                   // Ask the browser to check for a newer SW
                   registration.update();
+                  
+                let refreshing = false;
+
                   navigator.serviceWorker.addEventListener('controllerchange', () => {
-                      console.log("New Service Worker has taken control.");
-                  });
+                      if (!refreshing) {
+                          console.log("New Service Worker has taken control. Reloading...");
+                          refreshing = true;
+                          window.location.reload();
+                      }
+                   });
               })
               .catch((err) => {
                   console.error("Service Worker registration failed:", err);
@@ -968,7 +975,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time      
                   <br>      
-                 Version V58    
+                 Version V59    
               </div>          
         </div>
     
