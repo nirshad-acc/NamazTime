@@ -890,8 +890,7 @@ document.getElementById('lastUpd').innerText = "Last Sync: " + new Date().toLoca
     }
   }
   if (!r) {
-    const offset =
-    Number(personalSettings.locationOffset);
+    const offset = Number(personalSettings.locationOffset);
     const asrOffset =
         personalSettings.asrMethod===ASR_METHOD.SHAAFII
         ? -60
@@ -900,6 +899,13 @@ document.getElementById('lastUpd').innerText = "Last Sync: " + new Date().toLoca
     return;
   }
 //        r = getPersonalisedPrayerRow(r);
+  
+    const offset = Number(personalSettings.locationOffset || 0);
+    const asrOffset =
+        personalSettings.asrMethod === ASR_METHOD.SHAAFII
+            ? -60
+            : 0;
+  
   const tripleRow = (name, sub, s, a, j) => `
     <div class="prayer-row raised">
       <div class="n-stack"><span class="p-sub">${sub}</span><span class="p-name">${name}</span></div>
@@ -1105,7 +1111,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time      
                   <br>      
-                 Version V67 sat 11 Jul 2055
+                 Version V68 sat 11 Jul 2115
               </div>          
         </div>
     
