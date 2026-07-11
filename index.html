@@ -420,45 +420,6 @@ function loadPersonalSettings(){
     };
 }
 
-//function updatePersonalBanner(){
-//    const banner =
-//        document.getElementById("personalBanner");
-//    if(!banner) return;
-//    const active =
-//        personalSettings.locationOffset !== 0 ||
-//        personalSettings.asrMethod !== ASR_METHOD.HANAFI;
-//    if(active){
-//        banner.style.display="block";
-//        banner.innerHTML = `
-//        ⚙️ <b>Personal Prayer Adjustments Active</b>
-//        <br><br>
-//        Base:
-//        Official Sea-level Timetable
-//        <br>
-//        Location Offset:
-//        ${
-//          personalSettings.locationOffset > 0
-//          ? "+"
-//          :
- //         ""
-//        }
-//        ${personalSettings.locationOffset} min
-//        <br>
-//        Asr Method:
-//        ${
-//          personalSettings.asrMethod === ASR_METHOD.HANAFI
-//          ?
-//          "Hanafi"
-//          :
-//          "Shaafi' / Hanbali"
-//        }
-//        `;
-//    }
-//    else{
-//        banner.style.display="none";
-//    }
-//}
-
  function updatePersonalBanner(){
     const banner =
         document.getElementById("personalBanner");
@@ -846,120 +807,149 @@ async function checkForUpdates() {
           .catch(err => console.warn("Silent pre-fetch failed (likely offline):", err));
       }
 
-      function renderDayData(d = yearData, targetDateObj = new Date()){
-        document.getElementById('loader').style.display = 'none';
-        
-        const targetDay = targetDateObj.getDate();
-        const targetMonth = targetDateObj.getMonth();
-        
-        // 🛠️ OFFLINE HIJRI DELTA CALCULATOR ENGINE
-        const pVal = document.getElementById('datePicker').value;
-        const todayStr = getLocalDateString();
-        const targetDateStr = pVal || todayStr;
-        
-        let calculatedHijri = d.hijri; // Default fallback
+function adjustTime(timeStr, offsetMinutes){
+    if(timeStr==="---") return timeStr;
+    const p=timeStr.split(":");
+    let mins=
+        parseInt(p[0],10)*60+
+        parseInt(p[1],10);
+    mins+=offsetMinutes;
+    while(mins<0) mins+=1440;
+    while(mins>=1440) mins-=1440;
+    const h=Math.floor(mins/60);
+    const m=mins%60;
+    return (
+        String(h).padStart(2,"0")
+        +":"
+        +
+        String(m).padStart(2,"0")
+    );
+}
 
-        const anchorGregorian = localStorage.getItem("hijriAnchorGregorian");
-        const anchorHijri = localStorage.getItem("hijriAnchorString");
+function displayTime(baseTime, offset){
+    return adjustTime(baseTime,offset);
+}
 
-        if (anchorGregorian && anchorHijri) {
+function renderDayData(d = yearData, targetDateObj = new Date()){
+  document.getElementById('loader').style.display = 'none';
+  
+  const targetDay = targetDateObj.getDate();
+  const targetMonth = targetDateObj.getMonth();
+  
+  // 🛠️ OFFLINE HIJRI DELTA CALCULATOR ENGINE
+  const pVal = document.getElementById('datePicker').value;
+  const todayStr = getLocalDateString();
+  const targetDateStr = pVal || todayStr;
+  
+  let calculatedHijri = d.hijri; // Default fallback
+
+  const anchorGregorian = localStorage.getItem("hijriAnchorGregorian");
+  const anchorHijri = localStorage.getItem("hijriAnchorString");
+
+  if (anchorGregorian && anchorHijri) {
 //          const targetDateObj = new Date(targetDateStr + 'T00:00:00');
-          const anchorDateObj = new Date(anchorGregorian + 'T00:00:00');
-          
-          // Calculate exact elapsed days between target and anchor
-          const diffTime = targetDateObj - anchorDateObj;
-          const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    const anchorDateObj = new Date(anchorGregorian + 'T00:00:00');
+    
+    // Calculate exact elapsed days between target and anchor
+    const diffTime = targetDateObj - anchorDateObj;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-          if (diffDays === 0) {
-            calculatedHijri = anchorHijri;
-          } else {
-            // Parse out the leading day digits (e.g., "24" from "24 Dhul-Qadah 1447")
-            const match = anchorHijri.match(/^(\d+)\s+(.+)$/);
-            if (match) {
-              const baseDay = parseInt(match[1], 10);
-              const monthYearText = match[2];
-              const dynamicDay = baseDay + diffDays;
+    if (diffDays === 0) {
+      calculatedHijri = anchorHijri;
+    } else {
+      // Parse out the leading day digits (e.g., "24" from "24 Dhul-Qadah 1447")
+      const match = anchorHijri.match(/^(\d+)\s+(.+)$/);
+      if (match) {
+        const baseDay = parseInt(match[1], 10);
+        const monthYearText = match[2];
+        const dynamicDay = baseDay + diffDays;
 
-              // Restrict offline increments to a maximum of 29 days
-              if (dynamicDay > 0 && dynamicDay <= 29) {
-                calculatedHijri = `${dynamicDay} ${monthYearText}`;
-              } else {
-                calculatedHijri = "--";
-              }
-            } else {
-              calculatedHijri = "--";
-            }
-          }
+        // Restrict offline increments to a maximum of 29 days
+        if (dynamicDay > 0 && dynamicDay <= 29) {
+          calculatedHijri = `${dynamicDay} ${monthYearText}`;
         } else {
-          calculatedHijri = d.hijri || "--";
+          calculatedHijri = "--";
         }
-      
-      document.getElementById('isl-hero').innerText = calculatedHijri;
-      document.getElementById('lastUpd').innerText = "Last Sync: " + new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-
-        let r = null;
-        let daysArray = d.months[targetMonth].days;
-        for (let i = 1; i < daysArray.length; i++) {
-          if (parseInt(daysArray[i][0], 10) === targetDay) {
-            r = daysArray[i];
-            break;
-          }
-        }
-        if (!r) {
-          document.getElementById('content').innerHTML = '<div style="text-align:center; padding: 20px; color: var(--warning); font-weight:bold;">No data found for this date.</div>';
-          return;
-        }
-//        r = getPersonalisedPrayerRow(r);
-        const tripleRow = (name, sub, s, a, j) => `
-          <div class="prayer-row raised">
-            <div class="n-stack"><span class="p-sub">${sub}</span><span class="p-name">${name}</span></div>
-            <div class="t-box"><span class="lbl">Start</span><span class="tim">${s}</span></div>
-            <div class="t-box"><span class="lbl">Azaan</span><span class="tim">${a}</span></div>
-            <div class="t-box"><span class="lbl">Jamaat</span><span class="tim">${j}</span></div>
-          </div>`;
-
-        const singleRow = (name, sub, time, sun = false) => `
-          <div class="prayer-row ${sun ? 'sunken' : 'raised'} single">
-            <div class="n-stack"><span class="p-sub">${sub}</span><span class="p-name">${name}</span></div>
-            <div class="t-box"><span class="tim">${time}</span></div>
-          </div>`;
-
-        let h = '';
-        h += singleRow('Subhe Sadiq', 'Tahajjud End', r[1]);
-        h += tripleRow('Fajr', 'Morning Prayer', r[2], r[3], r[4]);
-        h += singleRow('Sunrise', 'Prohibited', r[5], true);
-        h += singleRow('Zawaal', 'Prohibited', r[6], true);
-        h += tripleRow('Zohr', 'Midday Prayer', r[7], '---', '13:00');
-        h += tripleRow('Assr', 'Afternoon Prayer', r[8], r[9], r[10]);
-        h += singleRow('Sunset', 'Prohibited', r[11], true);
-        h += tripleRow('Maghrib', 'Evening Prayer', r[12], '---', '---');
-        h += tripleRow('Esha', 'Night Prayer', r[13], r[14], r[15]);
-
-        h += `
-          <div class="prayer-row raised" style="margin-top: 30px; background: #fff; border-left: 6px solid var(--primary); grid-template-columns: 1fr 1fr;">
-            <div class="n-stack">
-              <span class="p-sub">Calculated From</span>
-              <span class="p-name">Moon Sighted Date</span>
-            </div>
-            <div class="t-box" style="text-align: right; padding-right: 15px; justify-content: center;">
-              <span class="tim" style="font-size: 1rem; color: var(--primary);">${d.sightDate || 'N/A'}</span>
-            </div>
-          </div>
-        `;
-
-        if (d.events && d.events.length > 0) {
-          h += `<div style="margin-top: 20px; padding: 18px; background: white; border-radius: 20px; box-shadow: 4px 4px 10px var(--shadow-dark);">`;
-          h += `<div style="font-size: 0.7rem; color: var(--primary); font-weight: 900; text-transform: uppercase; border-bottom: 2px solid var(--bg); margin-bottom: 12px; padding-bottom: 5px;">IMPORTANT DATES in ${d.hijriMonth}</div>`;
-          d.events.forEach(ev => {
-            h += `<div style="display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f2f7f7; font-size: 0.8rem;">
-                <span style="font-weight: 900; color: var(--primary);">${ev.day}</span>
-                <span>${ev.detail}</span>
-              </div>`;
-          });
-          h += `</div>`;
-        }
-        document.getElementById('content').innerHTML = h;
+      } else {
+        calculatedHijri = "--";
       }
+    }
+  } else {
+    calculatedHijri = d.hijri || "--";
+  }
+
+document.getElementById('isl-hero').innerText = calculatedHijri;
+document.getElementById('lastUpd').innerText = "Last Sync: " + new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+
+  let r = null;
+  let daysArray = d.months[targetMonth].days;
+  for (let i = 1; i < daysArray.length; i++) {
+    if (parseInt(daysArray[i][0], 10) === targetDay) {
+      r = daysArray[i];
+      break;
+    }
+  }
+  if (!r) {
+    const offset =
+    Number(personalSettings.locationOffset);
+    const asrOffset =
+        personalSettings.asrMethod===ASR_METHOD.SHAAFII
+        ? -60
+        : 0;
+    document.getElementById('content').innerHTML = '<div style="text-align:center; padding: 20px; color: var(--warning); font-weight:bold;">No data found for this date.</div>';
+    return;
+  }
+//        r = getPersonalisedPrayerRow(r);
+  const tripleRow = (name, sub, s, a, j) => `
+    <div class="prayer-row raised">
+      <div class="n-stack"><span class="p-sub">${sub}</span><span class="p-name">${name}</span></div>
+      <div class="t-box"><span class="lbl">Start</span><span class="tim">${s}</span></div>
+      <div class="t-box"><span class="lbl">Azaan</span><span class="tim">${a}</span></div>
+      <div class="t-box"><span class="lbl">Jamaat</span><span class="tim">${j}</span></div>
+    </div>`;
+
+  const singleRow = (name, sub, time, sun = false) => `
+    <div class="prayer-row ${sun ? 'sunken' : 'raised'} single">
+      <div class="n-stack"><span class="p-sub">${sub}</span><span class="p-name">${name}</span></div>
+      <div class="t-box"><span class="tim">${time}</span></div>
+    </div>`;
+
+  let h = '';
+  h += singleRow('Subhe Sadiq', 'Tahajjud End', displayTime(r[1],-offset));
+  h += tripleRow('Fajr', 'Morning Prayer',displayTime(r[2],-offset), r[3], r[4]);
+  h += singleRow('Sunrise', 'Prohibited', displayTime(r[5],-offset), true);
+  h += singleRow('Zawaal', 'Prohibited', r[6], true);
+  h += tripleRow('Zohr', 'Midday Prayer', r[7], '---', '13:00');
+  h += tripleRow('Assr', 'Afternoon Prayer', displayTime(r[8],asrOffset-offset), r[9], r[10]);
+  h += singleRow('Sunset', 'Prohibited', displayTime(r[11],offset), true);
+  h += tripleRow('Maghrib', 'Evening Prayer', displayTime(r[12],offset), '---', '---');
+  h += tripleRow('Esha', 'Night Prayer', displayTime(r[13],offset), r[14], r[15]);
+
+  h += `
+    <div class="prayer-row raised" style="margin-top: 30px; background: #fff; border-left: 6px solid var(--primary); grid-template-columns: 1fr 1fr;">
+      <div class="n-stack">
+        <span class="p-sub">Calculated From</span>
+        <span class="p-name">Moon Sighted Date</span>
+      </div>
+      <div class="t-box" style="text-align: right; padding-right: 15px; justify-content: center;">
+        <span class="tim" style="font-size: 1rem; color: var(--primary);">${d.sightDate || 'N/A'}</span>
+      </div>
+    </div>
+  `;
+
+  if (d.events && d.events.length > 0) {
+    h += `<div style="margin-top: 20px; padding: 18px; background: white; border-radius: 20px; box-shadow: 4px 4px 10px var(--shadow-dark);">`;
+    h += `<div style="font-size: 0.7rem; color: var(--primary); font-weight: 900; text-transform: uppercase; border-bottom: 2px solid var(--bg); margin-bottom: 12px; padding-bottom: 5px;">IMPORTANT DATES in ${d.hijriMonth}</div>`;
+    d.events.forEach(ev => {
+      h += `<div style="display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f2f7f7; font-size: 0.8rem;">
+          <span style="font-weight: 900; color: var(--primary);">${ev.day}</span>
+          <span>${ev.detail}</span>
+        </div>`;
+    });
+    h += `</div>`;
+  }
+  document.getElementById('content').innerHTML = h;
+}
       function openSettings(){
           window.location.href="settings.html";
       }
@@ -1115,7 +1105,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time      
                   <br>      
-                 Version V66 sat 11 Jul 2040
+                 Version V67 sat 11 Jul 2055
               </div>          
         </div>
     
