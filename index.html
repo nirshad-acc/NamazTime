@@ -890,22 +890,12 @@ document.getElementById('lastUpd').innerText = "Last Sync: " + new Date().toLoca
     }
   }
   if (!r) {
-    const offset = Number(personalSettings.locationOffset);
-    const asrOffset =
-        personalSettings.asrMethod===ASR_METHOD.SHAAFII
-        ? -60
-        : 0;
     document.getElementById('content').innerHTML = '<div style="text-align:center; padding: 20px; color: var(--warning); font-weight:bold;">No data found for this date.</div>';
     return;
   }
 //        r = getPersonalisedPrayerRow(r);
   
-    const offset = Number(personalSettings.locationOffset || 0);
-    const asrOffset =
-        personalSettings.asrMethod === ASR_METHOD.SHAAFII
-            ? -60
-            : 0;
-  
+     
   const tripleRow = (name, sub, s, a, j) => `
     <div class="prayer-row raised">
       <div class="n-stack"><span class="p-sub">${sub}</span><span class="p-name">${name}</span></div>
@@ -921,15 +911,15 @@ document.getElementById('lastUpd').innerText = "Last Sync: " + new Date().toLoca
     </div>`;
 
   let h = '';
-  h += singleRow('Subhe Sadiq', 'Tahajjud End', displayTime(r[1],-offset));
-  h += tripleRow('Fajr', 'Morning Prayer',displayTime(r[2],-offset), r[3], r[4]);
-  h += singleRow('Sunrise', 'Prohibited', displayTime(r[5],-offset), true);
+  h += singleRow('Subhe Sadiq', 'Tahajjud End', r[1]);
+  h += tripleRow('Fajr', 'Morning Prayer',r[2], r[3], r[4]);
+  h += singleRow('Sunrise', 'Prohibited', r[5], true);
   h += singleRow('Zawaal', 'Prohibited', r[6], true);
   h += tripleRow('Zohr', 'Midday Prayer', r[7], '---', '13:00');
-  h += tripleRow('Assr', 'Afternoon Prayer', displayTime(r[8],asrOffset-offset), r[9], r[10]);
-  h += singleRow('Sunset', 'Prohibited', displayTime(r[11],offset), true);
-  h += tripleRow('Maghrib', 'Evening Prayer', displayTime(r[12],offset), '---', '---');
-  h += tripleRow('Esha', 'Night Prayer', displayTime(r[13],offset), r[14], r[15]);
+  h += tripleRow('Assr', 'Afternoon Prayer', r[8], r[9], r[10]);
+  h += singleRow('Sunset', 'Prohibited',r[11], true);
+  h += tripleRow('Maghrib', 'Evening Prayer',r[12], '---', '---');
+  h += tripleRow('Esha', 'Night Prayer', r[13], r[14], r[15]);
 
   h += `
     <div class="prayer-row raised" style="margin-top: 30px; background: #fff; border-left: 6px solid var(--primary); grid-template-columns: 1fr 1fr;">
@@ -1111,7 +1101,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time      
                   <br>      
-                 Version V68 sat 11 Jul 2115
+                 Version V69 sat 11 Jul 2125
               </div>          
         </div>
     
