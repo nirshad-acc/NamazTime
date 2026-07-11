@@ -182,6 +182,11 @@
       
       <div id="loader" class="loader" style="display:none;"></div>
         <div id="content"></div>
+              <div id="personalBanner" 
+               style="
+               display:none;  margin:15px 0;   padding:12px;  border-radius:15px;  background:white; box-shadow:3px 3px 8px rgba(0,0,0,.15);
+               font-size:.75rem;             color:var(--primary);             text-align:center;             ">
+              </div>
         
         <div class="button-row">
           <button class="menu-btn calendar-btn" onclick="showYearCalendar()">
@@ -299,7 +304,7 @@
         setTimeout(() => {
             checkForUpdates();
         }, 500);
-               
+       updatePersonalBanner();        
       };
 
 
@@ -416,34 +421,71 @@ function loadPersonalSettings(){
 }
 
       
-function updatePersonalBanner() {
-    const banner = document.getElementById("personalBanner");
-    if (!banner) return;
-    if (personalSettingsActive()) {
-        banner.style.display = "block";
+//function updatePersonalBanner() {
+//    const banner = document.getElementById("personalBanner");
+//    if (!banner) return;
+//    if (personalSettingsActive()) {
+//        banner.style.display = "block";
+//        banner.innerHTML = `
+//            ℹ️ <b>Personal Prayer Settings Active</b><br>
+//           Location Offset:
+//                ${personalSettings.locationOffset > 0 ? "+" : ""}
+//                ${personalSettings.locationOffset} min
+//                <br>
+//                Asr Method:
+//               ${
+//                personalSettings.asrMethod===ASR_METHOD.HANAFI
+//                ?
+//                "Hanafi"
+//                :
+//                "Shaafi' / Hanbali"
+//                }
+ //               <br>
+ //           <button onclick="resetPersonalSettings()">Reset to Default</button>
+ //       `;
+ //   } else {
+//        banner.style.display = "none";
+//    }
+//}
+function updatePersonalBanner(){
+    const banner =
+        document.getElementById("personalBanner");
+    if(!banner) return;
+    const active =
+        personalSettings.locationOffset !== 0 ||
+        personalSettings.asrMethod !== ASR_METHOD.HANAFI;
+    if(active){
+        banner.style.display="block";
         banner.innerHTML = `
-            ℹ️ <b>Personal Prayer Settings Active</b><br>
-            Location Offset:
-                ${personalSettings.locationOffset > 0 ? "+" : ""}
-                ${personalSettings.locationOffset} min
-                <br>
-                
-                Asr Method:
-                ${
-                personalSettings.asrMethod===ASR_METHOD.HANAFI
-                ?
-                "Hanafi"
-                :
-                "Shaafi' / Hanbali"
-                }
-                <br>
-            <button onclick="resetPersonalSettings()">Reset to Default</button>
+        ⚙️ <b>Personal Prayer Adjustments Active</b>
+        <br><br>
+        Base:
+        Official Sea-level Timetable
+        <br>
+        Location Offset:
+        ${
+          personalSettings.locationOffset > 0
+          ? "+"
+          :
+          ""
+        }
+        ${personalSettings.locationOffset} min
+        <br>
+        Asr Method:
+        ${
+          personalSettings.asrMethod === ASR_METHOD.HANAFI
+          ?
+          "Hanafi"
+          :
+          "Shaafi' / Hanbali"
+        }
         `;
-    } else {
-        banner.style.display = "none";
+    }
+    else{
+        banner.style.display="none";
     }
 }
-
+      
 function resetTempSettings(){
     if(!tempPrayerSettings) return;
     tempPrayerSettings = {
@@ -454,9 +496,15 @@ function resetTempSettings(){
 }
 
       
-function refreshPrayerView() {
-    const d = getCurrentDayData(); // your cached day fetch
+//function refreshPrayerView() {
+//    const d = getCurrentDayData(); // your cached day fetch
+//    renderPrayerUI(d);
+//}
+      
+function refreshPrayerView(){
+    const d = getCurrentDayData();
     renderPrayerUI(d);
+    updatePersonalBanner();
 }
       
 function onOffsetChange(value) {
@@ -990,7 +1038,7 @@ function closePrayerSettings() {
     }
     else{
         summary.innerHTML =
-        "<b>✓ Official mosque timetable</b>";
+        "<b>✓ Official Sea-Level timetable</b>";
     }
 }
 
@@ -1031,7 +1079,7 @@ function resetPersonalSettings(){
         <!-- Control Hub Menu -->
         <div id="controlHubMenu" class="hidden">
             <div class="hubItem" onclick="openPrayerSettings(); closeControlHub();">
-                ⚙️ Prayer Time Adjustments
+                ⚙️ Prayer Time Settings
             </div>
             <div class="hubItem" onclick="openLocation()">
                 📍 Location
@@ -1065,7 +1113,7 @@ function resetPersonalSettings(){
 <div id="prayerSettingsModal" class="modalOverlay" style="display:none;">
     <div class="modalCard">
 
-        <h2>Prayer Time Settings</h2>
+        <h2>Prayer Time Adjustments</h2>
         <hr>
         <div class="settingRow">
             <span>Location Offset</span>
