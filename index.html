@@ -379,17 +379,41 @@ function savePersonalSettings(settings) {
     );
 }
 
-function loadPersonalSettings() {
-    const saved = localStorage.getItem("personalPrayerSettings");
-    if (saved) {
-        return JSON.parse(saved);
+//function loadPersonalSettings() {
+//    const saved = localStorage.getItem("personalPrayerSettings");
+//    if (saved) {
+//        return JSON.parse(saved);
+//    }
+//    return {
+//        locationOffset: 0,
+//        asrMethod: ASR_METHOD.HANAFI
+//    };
+//}
+
+function loadPersonalSettings(){
+    const saved =
+        localStorage.getItem("personalPrayerSettings");
+    if(saved){
+        try{
+            const data = JSON.parse(saved);
+            return {
+                locationOffset:
+                    Number(data.locationOffset) || 0,
+                asrMethod:
+                    data.asrMethod || ASR_METHOD.HANAFI
+            };
+        }
+        catch(e){
+            console.warn(
+                "Invalid prayer settings. Resetting."
+            );
+        }
     }
     return {
-        locationOffset: 0,
-        asrMethod: ASR_METHOD.HANAFI
+        locationOffset:0,
+        asrMethod:ASR_METHOD.HANAFI
     };
 }
-
 
       
 function updatePersonalBanner() {
@@ -399,8 +423,20 @@ function updatePersonalBanner() {
         banner.style.display = "block";
         banner.innerHTML = `
             ℹ️ <b>Personal Prayer Settings Active</b><br>
-            Location Offset: ${personalSettings.locationOffset} min<br>
-            Asr Method: ${personalSettings.asrMethod}<br>
+            Location Offset:
+                ${personalSettings.locationOffset > 0 ? "+" : ""}
+                ${personalSettings.locationOffset} min
+                <br>
+                
+                Asr Method:
+                ${
+                personalSettings.asrMethod===ASR_METHOD.HANAFI
+                ?
+                "Hanafi"
+                :
+                "Shaafi' / Hanbali"
+                }
+                <br>
             <button onclick="resetPersonalSettings()">Reset to Default</button>
         `;
     } else {
@@ -408,14 +444,6 @@ function updatePersonalBanner() {
     }
 }
 
-//function resetPersonalSettings() {
-//   personalSettings = {
-//        locationOffset: 0,
-//        asrMethod: ASR_METHOD.HANAFI
- //   };
-//    savePersonalSettings(personalSettings);
- //   refreshPrayerView();
-//}
 function resetTempSettings(){
     if(!tempPrayerSettings) return;
     tempPrayerSettings = {
@@ -444,12 +472,6 @@ function onAsrMethodChange(value) {
 }
 
 
-//function changeOffset(step) {
-//         personalSettings.locationOffset += step;
-//         document.getElementById("offsetValue").innerText =
-//         personalSettings.locationOffset + " min";
-
-//}
 function changeTempOffset(step){
     if(!tempPrayerSettings) return;
     tempPrayerSettings.locationOffset += step;
@@ -459,20 +481,13 @@ function changeTempOffset(step){
         tempPrayerSettings.locationOffset = MAX_OFFSET;
     updatePrayerSettingsDialog();
 }      
-// function setAsrMethod(method) {
-//    personalSettings.asrMethod = method;
-//    savePersonalSettings(personalSettings);
-//    refreshPrayerView();
-// }
+
 function changeTempAsr(value){
     if(!tempPrayerSettings) return;
     tempPrayerSettings.asrMethod=value;
     updatePrayerSettingsDialog();
 }
 
-// function openPrayerSettings(){
-//    document.getElementById("prayerSettingsModal").style.display="flex";    updatePrayerSettingsDialog();
-// }
 function openPrayerSettings(){
     closeControlHub();
     tempPrayerSettings = {
@@ -496,6 +511,19 @@ function resetPersonalSettings(){
     updatePersonalBanner();
 }
 
+//function savePrayerSettings(){
+//    if(!tempPrayerSettings) return;
+ //   personalSettings = {
+//        locationOffset:
+//            tempPrayerSettings.locationOffset,
+//        asrMethod:
+//            tempPrayerSettings.asrMethod
+//    };
+//    savePersonalSettings(personalSettings);
+//    refreshPrayerView();
+ //   closePrayerSettings();
+//}
+      
 function savePrayerSettings(){
     if(!tempPrayerSettings) return;
     personalSettings = {
@@ -507,10 +535,12 @@ function savePrayerSettings(){
     savePersonalSettings(personalSettings);
     refreshPrayerView();
     closePrayerSettings();
+    console.log(
+        "Prayer settings saved",
+        personalSettings
+    );
 }
-// function closePrayerSettings(){
-//     document.getElementById("prayerSettingsModal").style.display="none";}
-
+      
 function closePrayerSettings(){
     tempPrayerSettings=null;
     document.getElementById("prayerSettingsModal")
@@ -901,14 +931,6 @@ async function checkForUpdates() {
           alert("Removed for Normal user");
       }
 
-//function openPrayerSettings() {
-//    document.getElementById("prayerSettingsModal").style.display = "block";
-//    document.getElementById("offsetValue").innerText =
-//        personalSettings.locationOffset + " min";
-//    document.querySelector(
-//        `input[name="asrMethod"][value="${personalSettings.asrMethod}"]`
-//    ).checked = true;
-//}
 
 function closePrayerSettings() {
     document.getElementById("prayerSettingsModal").style.display = "none";
@@ -1034,7 +1056,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time      
                   <br>      
-                 Version V62 sat 11 Jul 1850    
+                 Version V63 sat 11 Jul 1920    
               </div>          
         </div>
     
