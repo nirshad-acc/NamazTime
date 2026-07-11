@@ -248,7 +248,7 @@
       window.onload = async () => {
         startClock();
         document.getElementById('datePicker').valueAsDate = new Date();
-      
+        updatePersonalBanner();
         const hubButton = document.getElementById("controlHubBtn");
         const hubMenu = document.getElementById("controlHubMenu");
 
@@ -420,70 +420,80 @@ function loadPersonalSettings(){
     };
 }
 
-      
-//function updatePersonalBanner() {
-//    const banner = document.getElementById("personalBanner");
-//    if (!banner) return;
-//    if (personalSettingsActive()) {
-//        banner.style.display = "block";
+//function updatePersonalBanner(){
+//    const banner =
+//        document.getElementById("personalBanner");
+//    if(!banner) return;
+//    const active =
+//        personalSettings.locationOffset !== 0 ||
+//        personalSettings.asrMethod !== ASR_METHOD.HANAFI;
+//    if(active){
+//        banner.style.display="block";
 //        banner.innerHTML = `
-//            ℹ️ <b>Personal Prayer Settings Active</b><br>
-//           Location Offset:
-//                ${personalSettings.locationOffset > 0 ? "+" : ""}
-//                ${personalSettings.locationOffset} min
-//                <br>
-//                Asr Method:
-//               ${
-//                personalSettings.asrMethod===ASR_METHOD.HANAFI
-//                ?
-//                "Hanafi"
-//                :
-//                "Shaafi' / Hanbali"
-//                }
- //               <br>
- //           <button onclick="resetPersonalSettings()">Reset to Default</button>
- //       `;
- //   } else {
-//        banner.style.display = "none";
+//        ⚙️ <b>Personal Prayer Adjustments Active</b>
+//        <br><br>
+//        Base:
+//        Official Sea-level Timetable
+//        <br>
+//        Location Offset:
+//        ${
+//          personalSettings.locationOffset > 0
+//          ? "+"
+//          :
+ //         ""
+//        }
+//        ${personalSettings.locationOffset} min
+//        <br>
+//        Asr Method:
+//        ${
+//          personalSettings.asrMethod === ASR_METHOD.HANAFI
+//          ?
+//          "Hanafi"
+//          :
+//          "Shaafi' / Hanbali"
+//        }
+//        `;
+//    }
+//    else{
+//        banner.style.display="none";
 //    }
 //}
-function updatePersonalBanner(){
+
+ function updatePersonalBanner(){
     const banner =
         document.getElementById("personalBanner");
     if(!banner) return;
-    const active =
-        personalSettings.locationOffset !== 0 ||
-        personalSettings.asrMethod !== ASR_METHOD.HANAFI;
-    if(active){
-        banner.style.display="block";
-        banner.innerHTML = `
-        ⚙️ <b>Personal Prayer Adjustments Active</b>
-        <br><br>
-        Base:
-        Official Sea-level Timetable
-        <br>
-        Location Offset:
-        ${
-          personalSettings.locationOffset > 0
-          ? "+"
-          :
-          ""
-        }
-        ${personalSettings.locationOffset} min
-        <br>
-        Asr Method:
-        ${
-          personalSettings.asrMethod === ASR_METHOD.HANAFI
-          ?
-          "Hanafi"
-          :
-          "Shaafi' / Hanbali"
-        }
-        `;
-    }
-    else{
-        banner.style.display="none";
-    }
+    const offsetText =
+        personalSettings.locationOffset === 0
+        ?
+        "None"
+        :
+        (
+            personalSettings.locationOffset > 0
+            ?
+            "+" + personalSettings.locationOffset + " min"
+            :
+            personalSettings.locationOffset + " min"
+        );
+    const asrText =
+        personalSettings.asrMethod === ASR_METHOD.HANAFI
+        ?
+        "Hanafi (Default)"
+        :
+        "Shaafi' / Hanbali";
+    banner.style.display="block";
+    banner.innerHTML = `
+    ⚙️ <b>Prayer Calculation Settings</b>
+    <br><br>
+    <b>Base:</b><br>
+    Official Sea-level Timetable
+    <br><br>
+    <b>Location Offset:</b><br>
+    ${offsetText}
+    <br><br>
+    <b>Asr Method:</b><br>
+    ${asrText}
+    `;
 }
       
 function resetTempSettings(){
@@ -582,6 +592,7 @@ function savePrayerSettings(){
     };
     savePersonalSettings(personalSettings);
     refreshPrayerView();
+    updatePersonalBanner();
     closePrayerSettings();
     console.log(
         "Prayer settings saved",
@@ -1104,7 +1115,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time      
                   <br>      
-                 Version V64 sat 11 Jul 1950    
+                 Version V65 sat 11 Jul 2015    
               </div>          
         </div>
     
