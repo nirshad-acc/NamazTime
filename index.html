@@ -91,12 +91,8 @@
             transition:        opacity .25s ease,    transform .35s ease,        box-shadow .35s ease;
             transform-origin:  center  center;
         }
-        #controlHubBtn.open{
-            transform:rotate(180deg);            box-shadow:0 6px 18px rgba(0,0,0,.40);
-        }
-        #controlHubBtn:hover{
-            opacity:.9;
-        }
+        #controlHubBtn.open{ transform:rotate(180deg); box-shadow:0 6px 18px rgba(0,0,0,.40);        }
+        #controlHubBtn:hover{  opacity:.9;        }
           
         #controlHubMenu{
             position:fixed;    bottom:80px;    left:18px;    width:230px;    background:white;    border-radius:12px;
@@ -104,51 +100,32 @@
             opacity:0;    transform:translateY(15px);    visibility:hidden;
             transition:   opacity .25s ease,    transform .25s ease,   visibility .25s;
                 }
-      #controlHubMenu.show{
-            opacity:1;
-            transform:translateY(0);
-            visibility:visible;
-              }
+      #controlHubMenu.show{            opacity:1;            transform:translateY(0);            visibility:visible; }
       
-        .hubItem{
-            padding:14px 16px;    cursor:pointer;    font-size:15px;    transition:.2s;
-        }
-        .hubItem:hover{
-            background:#f3f3f3;
-        }
-        .hubSeparator{
-            border-top:1px solid #ddd;
-        }
-        .adminItem{
-            color:#b00020;
-        }
-        .hubVersion{    padding:10px;    text-align:center;    font-size:11px;    color:#777;    background:#fafafa;
-            }
+        .hubItem{ padding:14px 16px;    cursor:pointer;    font-size:15px;    transition:.2s; }
+        .hubItem:hover{  background:#f3f3f3; }
+        .hubSeparator{  border-top:1px solid #ddd;}
+        .adminItem{ color:#b00020; }
+        .hubVersion{    padding:10px;    text-align:center;    font-size:11px;    color:#777;    background:#fafafa;}
         @keyframes menuAppear{
             from{
-                opacity:0;
-                transform:translateY(10px);
-            }
+                opacity:0;  transform:translateY(10px); }
             to{
-                opacity:1;
-                transform:translateY(0);
-            }
-        }
-      .modalOverlay{  position:fixed;  inset:0;  background:rgba(0,0,0,.45);  display:flex;  justify-content:center;  align-items:center;  z-index:5000;
-      }
-      .modalCard{  width:340px;  max-width:92%;  background:white;   border-radius:12px;    padding:20px;   box-shadow:0 10px 25px rgba(0,0,0,.25);
-      }
-      .settingRow{    display:flex;    flex-direction:column;    gap:10px;
-      }
-      .offsetBox{          display:flex;          justify-content:center;          align-items:center;          gap:15px;
-      }
-      .offsetBox button{          width:36px;          height:36px;
-      }
-      .buttonRow{          display:flex;          justify-content:space-between;
-      }
-      .asr-option {    display:flex;    align-items:center;    gap:10px;    cursor:pointer;    padding:8px 0;  }
-
-      
+                opacity:1; transform:translateY(0);}    }
+      .modalOverlay{  position:fixed;  inset:0;  background:rgba(0,0,0,.45);  display:flex;  justify-content:center;  align-items:center;  z-index:5000; }
+      .modalCard{ width:340px; max-width:92%; background:white;  border-radius:12px;  padding:20px; box-shadow:0 10px 25px rgba(0,0,0,.25);text-align:center; }
+      .settingRow{    display:flex;    flex-direction:column;    gap:10px;      }
+      .settingRow select { width:100%; padding:10px 12px; border:none; border-radius:10px; background:var(--bg); font-family:'Poppins',sans-serif; font-size:.85rem;
+          font-weight:700; color:var(--primary);
+          box-shadow: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light);
+          outline:none; cursor:pointer; }
+      .offsetBox{  display:flex; justify-content:center;  align-items:center; gap:15px;      }
+      .offsetBox button{  width:36px;  height:36px;      }
+      .buttonRow{ display:flex; gap:8px; justify-content:space-between; margin-top:15px;}
+      .buttonRow button{ flex:1; border:none; border-radius:10px;  padding:10px 8px;  background:var(--bg); color:var(--primary); font-weight:800; cursor:pointer;
+          box-shadow: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);   }
+      .buttonRow button:active{ transform:scale(.96);   }
+           
       .prayer-row { display: grid; grid-template-columns: 100px 1fr 1fr 1fr; align-items: center; padding: 14px 12px; margin-bottom: 12px; border-radius: 18px; text-align: center; gap: 5px; }
       .raised { box-shadow: 3px 3px 6px var(--shadow-dark), -2px -2px 4px var(--shadow-light); }  /* Reduced from 5px 5px 10px to a tighter, cleaner shadow */
         /* from ->>> .sunken { box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); background: #f0ffff; }  */
@@ -171,6 +148,8 @@
 
       .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 35px; height: 35px; animation: spin 0.4s linear infinite; margin: 30px auto; }
       @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+     
+      #settingsSummary{    font-size:.75rem;    line-height:1.6;    padding:12px;    border-radius:12px;    background:#f5ffff;    color:var(--primary);}
     </style>
   </head>
   <body>
@@ -248,6 +227,7 @@
       };
       
       let personalSettings = loadPersonalSettings();
+      let tempPrayerSettings = null;
       
       const MIN_OFFSET=-30;
       const MAX_OFFSET=30;
@@ -428,15 +408,24 @@ function updatePersonalBanner() {
     }
 }
 
-function resetPersonalSettings() {
-    personalSettings = {
-        locationOffset: 0,
-        asrMethod: ASR_METHOD.HANAFI
+//function resetPersonalSettings() {
+//   personalSettings = {
+//        locationOffset: 0,
+//        asrMethod: ASR_METHOD.HANAFI
+ //   };
+//    savePersonalSettings(personalSettings);
+ //   refreshPrayerView();
+//}
+function resetTempSettings(){
+    if(!tempPrayerSettings) return;
+    tempPrayerSettings = {
+        locationOffset:0,
+        asrMethod:ASR_METHOD.HANAFI
     };
-    savePersonalSettings(personalSettings);
-    refreshPrayerView();
+    updatePrayerSettingsDialog();
 }
 
+      
 function refreshPrayerView() {
     const d = getCurrentDayData(); // your cached day fetch
     renderPrayerUI(d);
@@ -455,42 +444,91 @@ function onAsrMethodChange(value) {
 }
 
 
-function changeOffset(step) {
-         personalSettings.locationOffset += step;
-         document.getElementById("offsetValue").innerText =
-         personalSettings.locationOffset + " min";
+//function changeOffset(step) {
+//         personalSettings.locationOffset += step;
+//         document.getElementById("offsetValue").innerText =
+//         personalSettings.locationOffset + " min";
 
-  //    savePersonalSettings(personalSettings);
- //   refreshPrayerView();
-}
-      
-function setAsrMethod(method) {
-    personalSettings.asrMethod = method;
-    savePersonalSettings(personalSettings);
-    refreshPrayerView();
-}
-
-function openPrayerSettings(){
-    document.getElementById("prayerSettingsModal").style.display="flex";
+//}
+function changeTempOffset(step){
+    if(!tempPrayerSettings) return;
+    tempPrayerSettings.locationOffset += step;
+    if(tempPrayerSettings.locationOffset < MIN_OFFSET)
+        tempPrayerSettings.locationOffset = MIN_OFFSET;
+    if(tempPrayerSettings.locationOffset > MAX_OFFSET)
+        tempPrayerSettings.locationOffset = MAX_OFFSET;
+    updatePrayerSettingsDialog();
+}      
+// function setAsrMethod(method) {
+//    personalSettings.asrMethod = method;
+//    savePersonalSettings(personalSettings);
+//    refreshPrayerView();
+// }
+function changeTempAsr(value){
+    if(!tempPrayerSettings) return;
+    tempPrayerSettings.asrMethod=value;
     updatePrayerSettingsDialog();
 }
 
-function closePrayerSettings(){
-    document.getElementById("prayerSettingsModal").style.display="none";
-
+// function openPrayerSettings(){
+//    document.getElementById("prayerSettingsModal").style.display="flex";    updatePrayerSettingsDialog();
+// }
+function openPrayerSettings(){
+    closeControlHub();
+    tempPrayerSettings = {
+        locationOffset:
+            personalSettings.locationOffset,
+        asrMethod:
+            personalSettings.asrMethod
+    };
+    document.getElementById("prayerSettingsModal")
+        .style.display="flex";
+    updatePrayerSettingsDialog();
 }
-// function openPrayerSettings() {
-//    document.getElementById("prayerSettingsModal").style.display = "block";
-//    document.getElementById("offsetValue").innerText =
-//        personalSettings.locationOffset + " min";
-//    document.querySelector(
-//        `input[name="asrMethod"][value="${personalSettings.asrMethod}"]`
-//    ).checked = true;
-//}
 
+function resetPersonalSettings(){
+    personalSettings={
+        locationOffset:0,
+        asrMethod:ASR_METHOD.HANAFI
+    };
+    savePersonalSettings(personalSettings);
+    refreshPrayerView();
+    updatePersonalBanner();
+}
+
+function savePrayerSettings(){
+    if(!tempPrayerSettings) return;
+    personalSettings = {
+        locationOffset:
+            tempPrayerSettings.locationOffset,
+        asrMethod:
+            tempPrayerSettings.asrMethod
+    };
+    savePersonalSettings(personalSettings);
+    refreshPrayerView();
+    closePrayerSettings();
+}
+// function closePrayerSettings(){
+//     document.getElementById("prayerSettingsModal").style.display="none";}
+
+function closePrayerSettings(){
+    tempPrayerSettings=null;
+    document.getElementById("prayerSettingsModal")
+        .style.display="none";
+}
       
-      
-      
+function closeControlHub(){
+    const menu = document.getElementById("controlHubMenu");
+    const btn  = document.getElementById("controlHubBtn");
+    if(menu){
+        menu.classList.remove("show");
+    }
+    if(btn){
+        btn.classList.remove("open");
+    }
+}
+    
+   
       function getLocalDateString() {
         const now = new Date();
       
@@ -876,43 +914,64 @@ function closePrayerSettings() {
     document.getElementById("prayerSettingsModal").style.display = "none";
 }
 
-function updatePrayerSettingsDialog(){
+<!-- 
+//  function updatePrayerSettingsDialog(){
+//    document.getElementById("offsetValue").innerText =
+//        personalSettings.locationOffset + " min";
+//    document.querySelector(
+//        'input[value="'+personalSettings.asrMethod+'"]'
+//    ).checked = true;
+//    const summary = document.getElementById("settingsSummary");
+//
+//    if(personalSettingsActive()){
+//        summary.innerHTML=`
+//            <b>ℹ Showing adjusted prayer times</b><br><br>
+ //           Location Offset :
+//            ${personalSettings.locationOffset} min<br>
+//            Asr Method :
+//            ${
+//                ? "Hanafi"
+ //               : "Shaafi' / Hanbali"
+ //           }
+ //       `;
+//    }else{
+//        summary.innerHTML=
+//            "<b>✓ Official mosque timetable</b>";
+//    }}
+-->
+  function updatePrayerSettingsDialog(){
+    if(!tempPrayerSettings) return;
     document.getElementById("offsetValue").innerText =
-        personalSettings.locationOffset + " min";
-    document.querySelector(
-        'input[value="'+personalSettings.asrMethod+'"]'
-    ).checked = true;
-    const summary = document.getElementById("settingsSummary");
-
-    if(personalSettingsActive()){
-        summary.innerHTML=`
-            <b>ℹ Showing adjusted prayer times</b><br><br>
-            Location Offset :
-            ${personalSettings.locationOffset} min<br>
-            Asr Method :
-            ${
-                personalSettings.asrMethod===ASR_METHOD.HANAFI
-                ? "Hanafi"
-                : "Shaafi' / Hanbali"
-            }
+        tempPrayerSettings.locationOffset + " min";
+    document.getElementById("asrMethodSelect").value =
+        tempPrayerSettings.asrMethod;
+    const summary =
+        document.getElementById("settingsSummary");
+    if(
+        tempPrayerSettings.locationOffset !==0 ||
+        tempPrayerSettings.asrMethod !== ASR_METHOD.HANAFI
+    ){
+       summary.innerHTML = `
+        <b>ℹ Preview Changes</b><br><br>
+        Location Offset :
+        ${tempPrayerSettings.locationOffset} min
+        <br>
+        Asr Method :
+        ${
+          tempPrayerSettings.asrMethod === ASR_METHOD.HANAFI
+          ?
+          "Hanafi"
+          :
+          "Shaafi' / Hanbali"
+        }
         `;
-    }else{
-        summary.innerHTML=
-            "<b>✓ Official mosque timetable</b>";
+    }
+    else{
+        summary.innerHTML =
+        "<b>✓ Official mosque timetable</b>";
     }
 }
 
-
-function XXXchangeOffset(step){
-    personalSettings.locationOffset+=step;
-    if(personalSettings.locationOffset<MIN_OFFSET)
-        personalSettings.locationOffset=MIN_OFFSET;
-    if(personalSettings.locationOffset>MAX_OFFSET)
-        personalSettings.locationOffset=MAX_OFFSET;
-    savePersonalSettings(personalSettings);
-    updatePrayerSettingsDialog();
-    refreshPrayerView();
-}
 
 function setAsrMethod(method){
     personalSettings.asrMethod=method;
@@ -949,7 +1008,7 @@ function resetPersonalSettings(){
         </button>
         <!-- Control Hub Menu -->
         <div id="controlHubMenu" class="hidden">
-            <div class="hubItem" onclick="openPrayerSettings()">
+            <div class="hubItem" onclick="openPrayerSettings(); closeControlHub();">
                 ⚙️ Prayer Time Settings
             </div>
             <div class="hubItem" onclick="openLocation()">
@@ -975,55 +1034,53 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time      
                   <br>      
-                 Version V60    
+                 Version V61 sat 11 Jul 1717    
               </div>          
         </div>
     
-    <!-- Prayer Time Settings Button -->
-<!--  <button id="settingsBtn" onclick="openPrayerSettings()">
-//      ⚙️ Settings
-//  </button>
--->
     
 <!-- Prayer Time Settings Modal -->
 <div id="prayerSettingsModal" class="modalOverlay" style="display:none;">
     <div class="modalCard">
+
         <h2>Prayer Time Settings</h2>
         <hr>
         <div class="settingRow">
             <span>Location Offset</span>
             <div class="offsetBox">
-                <button onclick="changeOffset(-1)">−</button>
-                <span id="offsetValue">0 min</span>
-                <button onclick="changeOffset(1)">+</button>
+                <button onclick="changeTempOffset(-1)">
+                    −
+                </button>
+                <span id="offsetValue">
+                    0 min
+                </span>
+                <button onclick="changeTempOffset(1)">
+                    +
+                </button>
             </div>
         </div>
         <hr>
-        <div class="asr-options">
-
-            <label class="asr-option">
-                <input 
-                    type="radio"
-                    name="asrMethod"
-                    value="hanafi"
-                    onchange="setAsrMethod(this.value)">
-                <span>Hanafi (Default)</span>
-            </label>
-            <label class="asr-option">
-                <input 
-                    type="radio"
-                    name="asrMethod"
-                    value="shaafii"
-                    onchange="setAsrMethod(this.value)">
-                <span>Shaafi' / Hanbali</span>
-            </label>
+        <div class="settingRow">
+            <span>Asr Calculation Method</span>
+            <select id="asrMethodSelect"
+                    onchange="changeTempAsr(this.value)">
+                <option value="hanafi">
+                    Hanafi (Default)
+                </option>
+                <option value="shaafii">
+                    Shaafi' / Hanbali
+                </option>
+            </select>
         </div>
         <hr>
         <div id="settingsSummary"></div>
         <hr>
         <div class="buttonRow">
-            <button onclick="resetPersonalSettings()">
-                Reset to Default
+            <button onclick="resetTempSettings()">
+                Reset
+            </button>
+            <button onclick="savePrayerSettings()">
+                Save
             </button>
             <button onclick="closePrayerSettings()">
                 Close
