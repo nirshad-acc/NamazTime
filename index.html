@@ -505,15 +505,19 @@ function resetTempSettings(){
     updatePrayerSettingsDialog();
 }
 
-      
-//function refreshPrayerView() {
-//    const d = getCurrentDayData(); // your cached day fetch
+//function refreshPrayerView(){
+//    const d = getCurrentDayData();
 //    renderPrayerUI(d);
+//    updatePersonalBanner();
 //}
-      
-function refreshPrayerView(){
-    const d = getCurrentDayData();
-    renderPrayerUI(d);
+
+function refreshPrayerView() {
+    const picker = document.getElementById("datePicker");
+    const targetDate =
+        picker.value
+        ? new Date(picker.value + "T00:00:00")
+        : new Date();
+    renderDayData(yearData, targetDate);
     updatePersonalBanner();
 }
       
@@ -991,10 +995,6 @@ async function checkForUpdates() {
       }
 
 
-function closePrayerSettings() {
-    document.getElementById("prayerSettingsModal").style.display = "none";
-}
-
 <!-- 
 //  function updatePrayerSettingsDialog(){
 //    document.getElementById("offsetValue").innerText =
@@ -1115,7 +1115,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time      
                   <br>      
-                 Version V65 sat 11 Jul 2015    
+                 Version V66 sat 11 Jul 2040
               </div>          
         </div>
     
