@@ -114,7 +114,7 @@
                 opacity:1; transform:translateY(0);}    }
       .modalOverlay{  position:fixed;  inset:0;  background:rgba(0,0,0,.45);  display:flex;  justify-content:center;  align-items:center;  z-index:5000; }
       .modalCard{ width:340px; max-width:92%; background:white;  border-radius:12px;  padding:20px; box-shadow:0 10px 25px rgba(0,0,0,.25);text-align:center; }
-      .settingRow{    display:flex;    flex-direction:column;    gap:10px;      }
+      /*.settingRow{    display:flex;    flex-direction:column;    gap:10px;      }   */
       .settingRow select { width:100%; padding:10px 12px; border:none; border-radius:10px; background:var(--bg); font-family:'Poppins',sans-serif; font-size:.85rem;
           font-weight:700; color:var(--primary);
           box-shadow: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light);
@@ -1009,7 +1009,7 @@ function resetPersonalSettings(){
         <!-- Control Hub Menu -->
         <div id="controlHubMenu" class="hidden">
             <div class="hubItem" onclick="openPrayerSettings(); closeControlHub();">
-                ⚙️ Prayer Time Settings
+                ⚙️ Prayer Time Adjustments
             </div>
             <div class="hubItem" onclick="openLocation()">
                 📍 Location
