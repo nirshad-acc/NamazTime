@@ -830,87 +830,124 @@ function displayTime(baseTime, offset){
     return adjustTime(baseTime,offset);
 }
 
-function renderDayData(d = yearData, targetDateObj = new Date()){
-  document.getElementById('loader').style.display = 'none';
-  
-  const targetDay = targetDateObj.getDate();
-  const targetMonth = targetDateObj.getMonth();
-  
-  // 🛠️ OFFLINE HIJRI DELTA CALCULATOR ENGINE
-  const pVal = document.getElementById('datePicker').value;
-  const todayStr = getLocalDateString();
-  const targetDateStr = pVal || todayStr;
-  
-  let calculatedHijri = d.hijri; // Default fallback
-
-  const anchorGregorian = localStorage.getItem("hijriAnchorGregorian");
-  const anchorHijri = localStorage.getItem("hijriAnchorString");
-
-  if (anchorGregorian && anchorHijri) {
-//          const targetDateObj = new Date(targetDateStr + 'T00:00:00');
-    const anchorDateObj = new Date(anchorGregorian + 'T00:00:00');
-    
-    // Calculate exact elapsed days between target and anchor
-    const diffTime = targetDateObj - anchorDateObj;
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays === 0) {
-      calculatedHijri = anchorHijri;
-    } else {
-      // Parse out the leading day digits (e.g., "24" from "24 Dhul-Qadah 1447")
-      const match = anchorHijri.match(/^(\d+)\s+(.+)$/);
-      if (match) {
-        const baseDay = parseInt(match[1], 10);
-        const monthYearText = match[2];
-        const dynamicDay = baseDay + diffDays;
-
-        // Restrict offline increments to a maximum of 29 days
-        if (dynamicDay > 0 && dynamicDay <= 29) {
-          calculatedHijri = `${dynamicDay} ${monthYearText}`;
+function renderDayData(d = yearData, targetDateObj = new Date()) {
+    document.getElementById("loader").style.display = "none";
+    const targetDay = targetDateObj.getDate();
+    const targetMonth = targetDateObj.getMonth();
+    // -------------------------------------------------
+    // OFFLINE HIJRI ENGINE
+    // -------------------------------------------------
+    const pickerValue = document.getElementById("datePicker").value;
+    const todayStr = getLocalDateString();
+    let calculatedHijri = d.hijri || "--";
+    const anchorGregorian = localStorage.getItem("hijriAnchorGregorian");
+    const anchorHijri = localStorage.getItem("hijriAnchorString");
+    if (anchorGregorian && anchorHijri) {
+        const anchorDate = new Date(anchorGregorian + "T00:00:00");
+        const diffDays = Math.floor(
+            (targetDateObj - anchorDate) /
+            (1000 * 60 * 60 * 24)
+        );
+        if (diffDays === 0) {
+            calculatedHijri = anchorHijri;
         } else {
-          calculatedHijri = "--";
+            const match = anchorHijri.match(/^(\d+)\s+(.+)$/);
+            if (match) {
+                const baseDay = parseInt(match[1], 10);
+                const monthText = match[2];
+                const newDay = baseDay + diffDays;
+                calculatedHijri =
+                    (newDay > 0 && newDay <= 29)
+                        ? `${newDay} ${monthText}`
+                        : "--";
+            }
         }
-      } else {
-        calculatedHijri = "--";
-      }
     }
-  } else {
-    calculatedHijri = d.hijri || "--";
-  }
-
-document.getElementById('isl-hero').innerText = calculatedHijri;
-document.getElementById('lastUpd').innerText = "Last Sync: " + new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-
-  let r = null;
-  let daysArray = d.months[targetMonth].days;
-  for (let i = 1; i < daysArray.length; i++) {
-    if (parseInt(daysArray[i][0], 10) === targetDay) {
-      r = daysArray[i];
-      break;
+    document.getElementById("isl-hero").innerText = calculatedHijri;
+    document.getElementById("lastUpd").innerText =
+        "Last Sync: " +
+        new Date().toLocaleTimeString(
+            "en-GB",
+            {
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        );
+    // -------------------------------------------------
+    // FIND TODAY
+    // -------------------------------------------------
+    const days = d.months[targetMonth].days;
+    let r = null;
+    for (let i = 1; i < days.length; i++) {
+        if (Number(days[i][0]) === targetDay) {
+            r = days[i];
+            break;
+        }
     }
-  }
-  if (!r) {
-    document.getElementById('content').innerHTML = '<div style="text-align:center; padding: 20px; color: var(--warning); font-weight:bold;">No data found for this date.</div>';
-    return;
-  }
-//        r = getPersonalisedPrayerRow(r);
-  
-     
-  const tripleRow = (name, sub, s, a, j) => `
-    <div class="prayer-row raised">
-      <div class="n-stack"><span class="p-sub">${sub}</span><span class="p-name">${name}</span></div>
-      <div class="t-box"><span class="lbl">Start</span><span class="tim">${s}</span></div>
-      <div class="t-box"><span class="lbl">Azaan</span><span class="tim">${a}</span></div>
-      <div class="t-box"><span class="lbl">Jamaat</span><span class="tim">${j}</span></div>
-    </div>`;
+    if (!r) {
+        document.getElementById("content").innerHTML =
+            '<div style="text-align:center;padding:20px;color:var(--warning);font-weight:bold;">No data found for this date.</div>';
+        return;
+    }
+    // -------------------------------------------------
+    // PERSONAL SETTINGS
+    // -------------------------------------------------
+    const offset = Number(personalSettings.locationOffset) || 0;
+    const subheSadiq =  adjustTime(r[1], -offset);
+    const fajrStart =  adjustTime(r[2], -offset);
+    const fajrAzaan =  r[3];
+    const fajrJamaat =  r[4];
+    const sunrise =  adjustTime(r[5], -offset);
+    const zawaal =  r[6];
+    const zohrStart =  r[7];
+    const zohrAzaan =  "---";
+    const zohrJamaat =  "13:00";
+    let asrStart =  adjustTime(r[8], -offset);
+    if (personalSettings.asrMethod === ASR_METHOD.SHAAFII) {
+        asrStart = adjustTime(asrStart, -60);    }
+    const asrAzaan = r[9];
+    const asrJamaat = r[10];
+    const sunset = adjustTime(r[11], offset);
+    const maghribStart = adjustTime(r[12], offset);
+    const maghribAzaan = "---";
+    const maghribJamaat = "---";
+    const eshaStart = adjustTime(r[13], offset);
+    const eshaAzaan = r[14];
+    const eshaJamaat = r[15];
+    // -------------------------------------------------
+    // HTML
+    // -------------------------------------------------
+    const tripleRow = (name, sub, start, azaan, jamaat) => `
+        <div class="prayer-row raised">
+            <div class="n-stack">
+                <span class="p-sub">${sub}</span>
+                <span class="p-name">${name}</span>
+            </div>
+            <div class="t-box">
+                <span class="lbl">Start</span>
+                <span class="tim">${start}</span>
+            </div>
+            <div class="t-box">
+                <span class="lbl">Azaan</span>
+                <span class="tim">${azaan}</span>
+            </div>
+            <div class="t-box">
+                <span class="lbl">Jamaat</span>
+                <span class="tim">${jamaat}</span>
+            </div>
+        </div>`;
+    const singleRow = (name, sub, time, sun = false) => `
+        <div class="prayer-row ${sun ? "sunken" : "raised"} single">
+            <div class="n-stack">
+                <span class="p-sub">${sub}</span>
+                <span class="p-name">${name}</span>
+            </div>
+            <div class="t-box">
+                <span class="tim">${time}</span>
+            </div>
+        </div>`;
 
-  const singleRow = (name, sub, time, sun = false) => `
-    <div class="prayer-row ${sun ? 'sunken' : 'raised'} single">
-      <div class="n-stack"><span class="p-sub">${sub}</span><span class="p-name">${name}</span></div>
-      <div class="t-box"><span class="tim">${time}</span></div>
-    </div>`;
-
-  let h = '';
+    let h = "";
   h += singleRow('Subhe Sadiq', 'Tahajjud End', r[1]);
   h += tripleRow('Fajr', 'Morning Prayer',r[2], r[3], r[4]);
   h += singleRow('Sunrise', 'Prohibited', r[5], true);
@@ -1101,7 +1138,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time      
                   <br>      
-                 Version V69 sat 11 Jul 2125
+                 Version V70 sun 12 Jul 2025
               </div>          
         </div>
     
