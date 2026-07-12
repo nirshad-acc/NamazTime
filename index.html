@@ -368,32 +368,12 @@ function getPersonalisedDayData(dayData) {
     return d;
 }
 
-function renderPrayerUI(currentDayData) {
-    // 1. Apply personalisation
-    const displayData = getPersonalisedDayData(currentDayData);
-    // 2. Render table
-    renderDayData(displayData);
-    // 3. Update banner
-    updatePersonalBanner();
-}
-
 function savePersonalSettings(settings) {
     localStorage.setItem(
         "personalPrayerSettings",
         JSON.stringify(settings)
     );
 }
-
-//function loadPersonalSettings() {
-//    const saved = localStorage.getItem("personalPrayerSettings");
-//    if (saved) {
-//        return JSON.parse(saved);
-//    }
-//    return {
-//        locationOffset: 0,
-//        asrMethod: ASR_METHOD.HANAFI
-//    };
-//}
 
 function loadPersonalSettings(){
     const saved =
@@ -522,16 +502,6 @@ function openPrayerSettings(){
     document.getElementById("prayerSettingsModal")
         .style.display="flex";
     updatePrayerSettingsDialog();
-}
-
-function resetPersonalSettings(){
-    personalSettings={
-        locationOffset:0,
-        asrMethod:ASR_METHOD.HANAFI
-    };
-    savePersonalSettings(personalSettings);
-    refreshPrayerView();
-    updatePersonalBanner();
 }
 
 //function savePrayerSettings(){
@@ -830,9 +800,6 @@ function adjustTime(timeStr, offsetMinutes){
         String(h).padStart(2,"0") + "." + String(m).padStart(2,"0") );
 }
 
-function displayTime(baseTime, offset){
-    return adjustTime(baseTime,offset);
-}
 
 function renderDayData(d = yearData, targetDateObj = new Date()) {
     document.getElementById("loader").style.display = "none";
@@ -841,7 +808,6 @@ function renderDayData(d = yearData, targetDateObj = new Date()) {
     // -------------------------------------------------
     // OFFLINE HIJRI ENGINE
     // -------------------------------------------------
-    const pickerValue = document.getElementById("datePicker").value;
     const todayStr = getLocalDateString();
     let calculatedHijri = d.hijri || "--";
     const anchorGregorian = localStorage.getItem("hijriAnchorGregorian");
@@ -898,8 +864,6 @@ function renderDayData(d = yearData, targetDateObj = new Date()) {
     // PERSONAL SETTINGS
     // -------------------------------------------------
     const offset = Number(personalSettings.locationOffset) || 0;
-      console.log("Prayer row:", r);
-      console.log("Offset:", offset);
     const subheSadiq =  adjustTime(r[1], -offset);
     const fajrStart =  adjustTime(r[2], -offset);
     const fajrAzaan =  r[3];
@@ -1025,31 +989,6 @@ h += tripleRow(    "Esha",      "Night Prayer",    eshaStart,   eshaAzaan,   esh
       }
 
 
-<!-- 
-//  function updatePrayerSettingsDialog(){
-//    document.getElementById("offsetValue").innerText =
-//        personalSettings.locationOffset + " min";
-//    document.querySelector(
-//        'input[value="'+personalSettings.asrMethod+'"]'
-//    ).checked = true;
-//    const summary = document.getElementById("settingsSummary");
-//
-//    if(personalSettingsActive()){
-//        summary.innerHTML=`
-//            <b>ℹ Showing adjusted prayer times</b><br><br>
- //           Location Offset :
-//            ${personalSettings.locationOffset} min<br>
-//            Asr Method :
-//            ${
-//                ? "Hanafi"
- //               : "Shaafi' / Hanbali"
- //           }
- //       `;
-//    }else{
-//        summary.innerHTML=
-//            "<b>✓ Official mosque timetable</b>";
-//    }}
--->
   function updatePrayerSettingsDialog(){
     if(!tempPrayerSettings) return;
     document.getElementById("offsetValue").innerText =
@@ -1145,7 +1084,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time      
                   <br>      
-                 Version V72 sun 12 Jul 2100
+                 Version V72.1 sun 12 Jul 2200
               </div>          
         </div>
     
