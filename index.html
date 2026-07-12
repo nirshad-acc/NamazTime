@@ -948,16 +948,16 @@ function renderDayData(d = yearData, targetDateObj = new Date()) {
         </div>`;
 
     let h = "";
-  h += singleRow('Subhe Sadiq', 'Tahajjud End', r[1]);
-  h += tripleRow('Fajr', 'Morning Prayer',r[2], r[3], r[4]);
-  h += singleRow('Sunrise', 'Prohibited', r[5], true);
-  h += singleRow('Zawaal', 'Prohibited', r[6], true);
-  h += tripleRow('Zohr', 'Midday Prayer', r[7], '---', '13:00');
-  h += tripleRow('Assr', 'Afternoon Prayer', r[8], r[9], r[10]);
-  h += singleRow('Sunset', 'Prohibited',r[11], true);
-  h += tripleRow('Maghrib', 'Evening Prayer',r[12], '---', '---');
-  h += tripleRow('Esha', 'Night Prayer', r[13], r[14], r[15]);
-
+h += singleRow(    "Subhe Sadiq",    "Tahajjud End",    subheSadiq);
+h += tripleRow(    "Fajr",    "Morning Prayer",    fajrStart,    fajrAzaan,    fajrJamaat);
+h += singleRow(    "Sunrise",    "Prohibited",    sunrise,    true);
+h += singleRow(    "Zawaal",    "Prohibited",    zawaal,    true);
+h += tripleRow(    "Zohr",    "Midday Prayer",    zohrStart,    zohrAzaan,    zohrJamaat);
+h += tripleRow(    "Assr",    "Afternoon Prayer",    asrStart,    asrAzaan,    asrJamaat);
+h += singleRow(    "Sunset",    "Prohibited",    sunset,    true);
+h += tripleRow(    "Maghrib",    "Evening Prayer",    maghribStart,    maghribAzaan,    maghribJamaat);
+h += tripleRow(    "Esha",      "Night Prayer",    eshaStart,   eshaAzaan,   eshaJamaat);
+ 
   h += `
     <div class="prayer-row raised" style="margin-top: 30px; background: #fff; border-left: 6px solid var(--primary); grid-template-columns: 1fr 1fr;">
       <div class="n-stack">
@@ -1138,7 +1138,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time      
                   <br>      
-                 Version V70 sun 12 Jul 2025
+                 Version V71 sun 12 Jul 2035
               </div>          
         </div>
     
