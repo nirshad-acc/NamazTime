@@ -808,22 +808,26 @@ async function checkForUpdates() {
       }
 
 function adjustTime(timeStr, offsetMinutes){
-    if(timeStr==="---") return timeStr;
-    const p=timeStr.split(":");
-    let mins=
-        parseInt(p[0],10)*60+
-        parseInt(p[1],10);
-    mins+=offsetMinutes;
-    while(mins<0) mins+=1440;
-    while(mins>=1440) mins-=1440;
-    const h=Math.floor(mins/60);
-    const m=mins%60;
+    if(!timeStr || timeStr==="---") return timeStr;
+    // Handle intervals like 06.46-07.00
+    if(timeStr.includes("-")){
+        const parts = timeStr.split("-");
+        return (adjustTime(parts[0], offsetMinutes) + "-" + adjustTime(parts[1], offsetMinutes));
+    }
+    // Accept both 05:25 and 5.25
+    const clean = timeStr.replace(".", ":");
+    const p = clean.split(":");
+    let mins = parseInt(p[0],10)*60 + parseInt(p[1],10);
+    mins += offsetMinutes;
+
+    while(mins < 0) mins += 1440;
+    while(mins >= 1440) mins -= 1440;
+
+    const h = Math.floor(mins/60);
+    const m = mins%60;
+
     return (
-        String(h).padStart(2,"0")
-        +":"
-        +
-        String(m).padStart(2,"0")
-    );
+        String(h).padStart(2,"0") + "." + String(m).padStart(2,"0") );
 }
 
 function displayTime(baseTime, offset){
@@ -890,12 +894,12 @@ function renderDayData(d = yearData, targetDateObj = new Date()) {
         return;
     }
 
-  console.log("Prayer row:", r);
-  console.log("Offset:", offset);
     // -------------------------------------------------
     // PERSONAL SETTINGS
     // -------------------------------------------------
     const offset = Number(personalSettings.locationOffset) || 0;
+      console.log("Prayer row:", r);
+      console.log("Offset:", offset);
     const subheSadiq =  adjustTime(r[1], -offset);
     const fajrStart =  adjustTime(r[2], -offset);
     const fajrAzaan =  r[3];
@@ -1141,7 +1145,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time      
                   <br>      
-                 Version V71 sun 12 Jul 2045
+                 Version V72 sun 12 Jul 2100
               </div>          
         </div>
     
