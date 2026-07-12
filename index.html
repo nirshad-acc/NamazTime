@@ -100,12 +100,12 @@
             opacity:0;    transform:translateY(15px);    visibility:hidden;
             transition:   opacity .25s ease,    transform .25s ease,   visibility .25s;
                 }
-      #controlHubMenu.show{            opacity:1;            transform:translateY(0);            visibility:visible; }
-      
+        #controlHubMenu.show{            opacity:1;            transform:translateY(0);            visibility:visible; }
+        #adminTouchArea {  position: fixed;  bottom: 0;  right: 0;  width: 35px;  height: 35px;  background: transparent;  z-index: 9999;
+              -webkit-tap-highlight-color: transparent;     }
         .hubItem{ padding:14px 16px;    cursor:pointer;    font-size:15px;    transition:.2s; }
         .hubItem:hover{  background:#f3f3f3; }
         .hubSeparator{  border-top:1px solid #ddd;}
-        .adminItem{ color:#b00020; }
         .hubVersion{    padding:10px;    text-align:center;    font-size:11px;    color:#777;    background:#fafafa;}
         @keyframes menuAppear{
             from{
@@ -300,7 +300,24 @@
                   console.error("Service Worker registration failed:", err);
               });
               }
-          
+          // Hidden administrator access - long press only
+                let adminPressTimer = null;
+                const adminArea = document.getElementById("adminTouchArea");
+                if(adminArea){
+                    const startPress = () => {
+                        adminPressTimer = setTimeout(() => {
+                            window.location.replace("./admin.html");
+                        }, 3000);
+                    };
+                    const cancelPress = () => {
+                        clearTimeout(adminPressTimer);
+                        adminPressTimer = null;                    };
+                    adminArea.addEventListener("mousedown", startPress);
+                    adminArea.addEventListener("mouseup", cancelPress);
+                    adminArea.addEventListener("mouseleave", cancelPress);
+                    adminArea.addEventListener("touchstart", startPress);
+                    adminArea.addEventListener("touchend", cancelPress);
+                    adminArea.addEventListener("touchcancel", cancelPress);   }
         setTimeout(() => {
             checkForUpdates();
         }, 500);
@@ -427,7 +444,7 @@ function loadPersonalSettings(){
     ⚙️ <b>Prayer Calculation Settings</b>
     <br><br>
     <b>Base:</b><br>
-    Official Sea-level Timetable
+    Official Jummah Masjid's Timetable
     <br><br>
     <b>Location Offset:</b><br>
     ${offsetText}
@@ -504,18 +521,6 @@ function openPrayerSettings(){
     updatePrayerSettingsDialog();
 }
 
-//function savePrayerSettings(){
-//    if(!tempPrayerSettings) return;
- //   personalSettings = {
-//        locationOffset:
-//            tempPrayerSettings.locationOffset,
-//        asrMethod:
-//            tempPrayerSettings.asrMethod
-//    };
-//    savePersonalSettings(personalSettings);
-//    refreshPrayerView();
- //   closePrayerSettings();
-//}
       
 function savePrayerSettings(){
     if(!tempPrayerSettings) return;
@@ -983,12 +988,6 @@ h += tripleRow(    "Esha",      "Night Prayer",    eshaStart,   eshaAzaan,   esh
          alert("Coming soon");
       }
       
-      function openAdmin(){
-//          window.location.href="admin.html";
-          alert("Removed for Normal user");
-      }
-
-
   function updatePrayerSettingsDialog(){
     if(!tempPrayerSettings) return;
     document.getElementById("offsetValue").innerText =
@@ -1040,17 +1039,7 @@ function resetPersonalSettings(){
 
     </script>
     
-    <div onclick="window.location.replace('./admin.html')" style="
-        position: fixed; 
-        bottom: 0; 
-        right: 0; 
-        width: 35px; 
-        height: 35px; 
-        background: transparent; 
-        z-index: 9999; 
-        cursor: default;
-        -webkit-tap-highlight-color: transparent;">
-    </div>
+    <div id="adminTouchArea"></div>
 
     <!-- Floating Control Hub Button -->
         <button id="controlHubBtn" title="Control Hub">
@@ -1077,14 +1066,12 @@ function resetPersonalSettings(){
                 ℹ️ About
             </div>
             <div class="hubSeparator"></div>
-            <div class="hubItem adminItem" onclick="openAdmin()">
-                👨‍💼 Administrator
-            </div>
-           <div class="hubSeparator"></div>
               <div class="hubVersion">      
                   Namaz Time      
-                  <br>      
-                 Version V72.1 sun 12 Jul 2200
+                  <br>
+                Last Updated: Ramdaan 1446/ Jul 2024
+                  <br>
+                 Version V73 Sun 12 Jul 2225
               </div>          
         </div>
     
