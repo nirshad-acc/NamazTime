@@ -222,7 +222,7 @@
       
       const USE_YEAR_CACHE = true;
       const YEAR_CACHE_KEY = "prayerCache_year";
-      const CACHE_MAX_AGE = 24 * 60 * 60 * 1000; // 24 hours
+//      const CACHE_MAX_AGE = 24 * 60 * 60 * 1000; // 24 hours
       
       let yearData = null;
 
@@ -443,8 +443,10 @@ function loadPersonalSettings(){
     banner.innerHTML = `
     ⚙️ <b>Prayer Calculation Settings</b>
     <br><br>
-    <b>Base:</b><br>
+    <b>Datebase:</b><br>
     Official Jummah Masjid's Timetable
+    <br>
+    Last Updated: Ramadaan 1446/ July 2024
     <br><br>
     <b>Location Offset:</b><br>
     ${offsetText}
@@ -612,7 +614,7 @@ function closeControlHub(){
         handleDateChange();
       }
 
-      
+/*    
       async function fetchWholeYear() {
    
         const cache = localStorage.getItem(YEAR_CACHE_KEY);
@@ -646,7 +648,26 @@ function closeControlHub(){
         );
         return data;
       }
+*/
 
+async function fetchWholeYear() {
+    const cache = localStorage.getItem(YEAR_CACHE_KEY);
+    if (cache) {
+        const parsed = JSON.parse(cache);
+        if (!localStorage.getItem("hijriAnchorGregorian")) {
+            localStorage.setItem("hijriAnchorGregorian", getLocalDateString() );
+            localStorage.setItem("hijriAnchorString", parsed.data.hijri ); }
+        console.log("Using whole-year cache");
+        return parsed.data;
+    }
+    console.log("Downloading whole year");
+    const response = await fetch(`${API_URL}?year=true`);
+    const data = await response.json();
+    localStorage.setItem(  YEAR_CACHE_KEY, JSON.stringify({lastSync: Date.now(), data: data})
+    );
+    return data;
+}
+      
 async function checkForUpdates() {
     console.log("Checking for newer backend data...");
     try {
@@ -1067,11 +1088,9 @@ function resetPersonalSettings(){
             </div>
             <div class="hubSeparator"></div>
               <div class="hubVersion">      
-                  Namaz Time Last Updated:     
+                  Namaz Time 
                   <br>
-                 Ramdaan 1446/ Jul 2024
-                  <br>
-                 Version V74 Sun 12 Jul 2240
+                 Version V75 Tue 14 Jul 26 1330
               </div>          
         </div>
     
