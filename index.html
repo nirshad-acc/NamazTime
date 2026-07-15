@@ -150,10 +150,104 @@
       @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
      
       #settingsSummary{    font-size:.75rem;    line-height:1.6;    padding:12px;    border-radius:12px;    background:#f5ffff;    color:var(--primary);}
+/* ---------- Reusable Dialog ---------- */
+
+        .dialog-overlay{
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,.45);
+            display:none;
+            justify-content:center;
+            align-items:center;
+            z-index:99999;
+            animation:fadeIn .2s ease;
+        }
+        
+        .dialog-box{
+            width:90%;
+            max-width:340px;
+            background:#fff;
+            border-radius:18px;
+            padding:22px;
+            text-align:center;
+            box-shadow:0 10px 30px rgba(0,0,0,.25);
+            animation:popIn .22s ease;
+            font-family:inherit;
+        }
+        
+        .dialog-icon{
+            font-size:42px;
+            margin-bottom:12px;
+        }
+        
+        .dialog-title{
+            font-size:20px;
+            font-weight:bold;
+            margin-bottom:12px;
+        }
+        
+        .dialog-message{
+            font-size:15px;
+            line-height:1.5;
+            white-space:pre-line;
+            color:#444;
+            margin-bottom:22px;
+        }
+        
+        .dialog-btn{
+            width:100%;
+            border:none;
+            border-radius:10px;
+            padding:12px;
+            font-size:16px;
+            cursor:pointer;
+            background:#1e88e5;
+            color:#fff;
+        }
+        
+        .dialog-btn:hover{
+            opacity:.9;
+        }
+        
+        @keyframes fadeIn{
+            from{opacity:0;}
+            to{opacity:1;}
+        }
+        
+        @keyframes popIn{
+            from{
+                transform:scale(.9);
+                opacity:0;
+            }
+            to{
+                transform:scale(1);
+                opacity:1;
+            }
+        }
+
+      
     </style>
   </head>
+
+        <!-- Reusable App Dialog -->
+        <div id="appDialog" class="dialog-overlay" onclick="closeDialog(event)">
+          <div class="dialog-box" onclick="event.stopPropagation()">
+            <div id="dialogIcon" class="dialog-icon">ℹ️</div>
+            <div id="dialogTitle" class="dialog-title">
+              Information
+            </div>
+            <div id="dialogMessage" class="dialog-message">
+              Message
+            </div>
+            <button class="dialog-btn" onclick="closeDialog()">
+              OK
+            </button>
+          </div>
+        </div>
+  
   <body>
 
+    
     <div class="container">
       <div class="header-block">
           <h1>Prayer Dashboard For Mauritius</h1>
@@ -324,7 +418,21 @@
        updatePersonalBanner();        
       };
 
+function showDialog(icon, title, message){
+    document.getElementById("dialogIcon").textContent = icon;
+    document.getElementById("dialogTitle").textContent = title;
+    document.getElementById("dialogMessage").textContent = message;
+    document.getElementById("appDialog").style.display = "flex";
+}
 
+function closeDialog(e){
+    if(e && e.target !== document.getElementById("appDialog"))
+                return;
+        document.getElementById("appDialog").style.display = "none";        }
+        document.addEventListener("keydown", function(e){
+            if(e.key === "Escape"){closeDialog();            }
+        });
+      
 function adjustInterval(start, end, offsetMinutes) {
     return {
         start: adjustTime(start, offsetMinutes),
@@ -986,27 +1094,27 @@ h += tripleRow(    "Esha",      "Night Prayer",    eshaStart,   eshaAzaan,   esh
       
       function openLocation(){
         //  window.location.href="location.html";
-         alert("Coming soon");
+         showDialog("🚧", "Coming Soon", "This feature is currently under development.\n\nIn shaa Allah it will be available in a future update." );
       }
       
       function openTheme(){
        //   window.location.href="theme.html";
-         alert("Coming soon");
+         showDialog("🚧", "Coming Soon", "This feature is currently under development.\n\nIn shaa Allah it will be available in a future update." );
       }
       
       function openMosqueInfo(){
        //   window.location.href="mosque.html";
-         alert("Coming soon");
+         showDialog("🚧", "Coming Soon", "This feature is currently under development.\n\nIn shaa Allah it will be available in a future update." );
       }
       
       function openNotifications(){
        //   window.location.href="notifications.html";
-         alert("Coming soon");
+         showDialog("🚧", "Coming Soon", "This feature is currently under development.\n\nIn shaa Allah it will be available in a future update." );
       }
       
       function openAbout(){
         //  window.location.href="about.html";
-         alert("Coming soon");
+         showDialog("🚧", "Coming Soon", "This feature is currently under development.\n\nIn shaa Allah it will be available in a future update." );
       }
       
   function updatePrayerSettingsDialog(){
@@ -1090,7 +1198,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time 
                   <br>
-                 Version V75 Tue 14 Jul 26 1330
+                 Version V77 Wed 15 Jul 26
               </div>          
         </div>
     
