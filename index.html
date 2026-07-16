@@ -771,6 +771,10 @@ async function fetchWholeYear() {
     const data = await response.json();
     localStorage.setItem(  YEAR_CACHE_KEY, JSON.stringify({lastSync: Date.now(), data: data})
     );
+      // After fetching fresh year data
+    localStorage.setItem("hijriAnchorGregorian", getLocalDateString());
+    localStorage.setItem("hijriAnchorString", data.hijri);
+    
     return data;
 }
       
@@ -1211,7 +1215,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time 
                   <br>
-                 Version V78.2 Thu 16 Jul 26
+                 Version V78.5 Thu 16 Jul 26
               </div>          
         </div>
     
