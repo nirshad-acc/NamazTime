@@ -283,7 +283,8 @@
               </div>
         
         <div class="button-row">
-          <button class="menu-btn calendar-btn" onclick="showYearCalendar()">
+          <button class="menu-btn calendar-btn" onclick="showDialog('🚧', 'Coming Soon', 'This feature is currently under development.\n\nIn shaa Allah it will be available in a future update.' )">
+            <i class="fas fa-calendar-alt"></i><br>
             <i class="fas fa-calendar-alt"></i><br>
             Hijri Archives  Since    1446/2024(Jul)
           </button>
@@ -529,13 +530,10 @@ function loadPersonalSettings(){
     const banner =
         document.getElementById("personalBanner");
     if(!banner) return;
-    const offsetText =
-        personalSettings.locationOffset === 0
-        ?
-        "None"
-        :
-        (
-            personalSettings.locationOffset > 0
+    const offsetText = personalSettings.locationOffset === 0 
+        ? 
+          "None"  :
+        ( personalSettings.locationOffset > 0
             ?
             "+" + personalSettings.locationOffset + " min"
             :
@@ -794,26 +792,41 @@ async function checkForUpdates() {
         if (cachedString === latestString) {
             console.log("Cache is already up to date.");
         } else {
-            console.log("New data detected. Updating cache...");
-
-            localStorage.setItem(
-                YEAR_CACHE_KEY,
-                JSON.stringify({
-                    lastSync: Date.now(),
-                    data: latest
-                })
-            );
-            // Update the in-memory copy
-            yearData = latest;
-            // Refresh the current screen
-            renderDayData(yearData);
-            console.log("Screen refreshed with latest data.");
-                    }
+                console.log("New data detected. Updating cache...");
+            
+                // Save new year cache
+                localStorage.setItem(
+                    YEAR_CACHE_KEY,
+                    JSON.stringify({
+                        lastSync: Date.now(),
+                        data: latest
+                    })
+                );
+            
+                // 🔥 IMPORTANT: reset Hijri anchor to the new official date
+                localStorage.setItem(
+                    "hijriAnchorGregorian",
+                    getLocalDateString()
+                );
+            
+                localStorage.setItem(
+                    "hijriAnchorString",
+                    latest.hijri
+                );
+            
+                // Update in-memory copy
+                yearData = latest;
+            
+                // Refresh screen
+                renderDayData(yearData);
+            
+                console.log("Hijri anchor updated:", latest.hijri);
+                console.log("Screen refreshed with latest data.");
+            }
       } catch (err) {
         console.error(err);
         }
   }
-      
       // Updated to handle standard fetch operations and record offline anchors
   
     async function fetchData() {
@@ -1198,7 +1211,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time 
                   <br>
-                 Version V77.1 Wed 15 Jul 26
+                 Version V78.2 Thu 16 Jul 26
               </div>          
         </div>
     
