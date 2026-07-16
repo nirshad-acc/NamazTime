@@ -780,39 +780,53 @@ async function checkForUpdates() {
         const response = await fetch(`${API_URL}?year=true`);
         const latest = await response.json();
         const cache = JSON.parse(localStorage.getItem(YEAR_CACHE_KEY));
-        if (!cache) {console.log("No cache found.");
+        if (!cache) {
+            console.log("No cache found.");
             return;
         }
         console.log("Comparing cache with backend...");
       
         const cachedString = JSON.stringify(cache.data);
         const latestString = JSON.stringify(latest);
-
-              if (cachedString === latestString) {
-                  console.log("Cache is already up to date.");        } 
-              
-              else {
-                  console.log("New data detected. Updating cache...");
-              
-                  // Save new year cache
-                  localStorage.setItem( YEAR_CACHE_KEY, JSON.stringify({ lastSync: Date.now(), data: latest })
-                  );
-              
-                  // 🔥 IMPORTANT: reset Hijri anchor to the new official date
-                  localStorage.setItem("hijriAnchorGregorian", getLocalDateString() );
-                  localStorage.setItem("hijriAnchorString", latest.hijri);
-              
-                  // Update in-memory copy
-                  yearData = latest;
-              
-                  // Refresh screen
-                  renderDayData(yearData);
-              
-                  console.log("Hijri anchor updated:", latest.hijri);
-                  console.log("Screen refreshed with latest data.");
-                }
+      
+        if (cachedString === latestString) {
+            console.log("Cache is already up to date.");
+        } else {
+                console.log("New data detected. Updating cache...");
+            
+                // Save new year cache
+                localStorage.setItem(
+                    YEAR_CACHE_KEY,
+                    JSON.stringify({
+                        lastSync: Date.now(),
+                        data: latest
+                    })
+                );
+            
+                // 🔥 IMPORTANT: reset Hijri anchor to the new official date
+                localStorage.setItem(
+                    "hijriAnchorGregorian",
+                    getLocalDateString()
+                );
+            
+                localStorage.setItem(
+                    "hijriAnchorString",
+                    latest.hijri
+                );
+            
+                // Update in-memory copy
+                yearData = latest;
+            
+                // Refresh screen
+                renderDayData(yearData);
+            
+                console.log("Hijri anchor updated:", latest.hijri);
+                console.log("Screen refreshed with latest data.");
             }
-}
+      } catch (err) {
+        console.error(err);
+        }
+  }
       // Updated to handle standard fetch operations and record offline anchors
   
     async function fetchData() {
@@ -1197,7 +1211,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time 
                   <br>
-                 Version V78.1 Thu 16 Jul 26
+                 Version V78.2 Thu 16 Jul 26
               </div>          
         </div>
     
