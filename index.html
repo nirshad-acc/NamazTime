@@ -530,13 +530,10 @@ function loadPersonalSettings(){
     const banner =
         document.getElementById("personalBanner");
     if(!banner) return;
-    const offsetText =
-        personalSettings.locationOffset === 0
-        ?
-        "None"
-        :
-        (
-            personalSettings.locationOffset > 0
+    const offsetText = personalSettings.locationOffset === 0 
+        ? 
+          "None"  :
+        ( personalSettings.locationOffset > 0
             ?
             "+" + personalSettings.locationOffset + " min"
             :
@@ -790,29 +787,7 @@ async function checkForUpdates() {
       
         const cachedString = JSON.stringify(cache.data);
         const latestString = JSON.stringify(latest);
-/*      
-        if (cachedString === latestString) {
-            console.log("Cache is already up to date.");
-        } else {
-            console.log("New data detected. Updating cache...");
 
-            localStorage.setItem(
-                YEAR_CACHE_KEY,
-                JSON.stringify({
-                    lastSync: Date.now(),
-                    data: latest
-                })
-            );
-            // Update the in-memory copy
-            yearData = latest;
-            // Refresh the current screen
-            renderDayData(yearData);
-            console.log("Screen refreshed with latest data.");
-                    }
-      } catch (err) { console.error(err);        }
-  }
-
-*/
               if (cachedString === latestString) {
                   console.log("Cache is already up to date.");        } 
               
@@ -835,8 +810,9 @@ async function checkForUpdates() {
               
                   console.log("Hijri anchor updated:", latest.hijri);
                   console.log("Screen refreshed with latest data.");
-        }
-      
+                }
+            }
+}
       // Updated to handle standard fetch operations and record offline anchors
   
     async function fetchData() {
@@ -1221,7 +1197,7 @@ function resetPersonalSettings(){
               <div class="hubVersion">      
                   Namaz Time 
                   <br>
-                 Version V78 Thu 16 Jul 26
+                 Version V78.1 Thu 16 Jul 26
               </div>          
         </div>
     
