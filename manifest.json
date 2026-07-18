@@ -2,7 +2,7 @@
   "name": "Namaz-Times Mauritius",
   "short_name": "Namaz",
   "description": "A lightweight, offline-first prayer dashboard for Mauritius.",
-  "start_url": "./index.html",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#e0fdfb",
   "theme_color": "#1e4d50",
